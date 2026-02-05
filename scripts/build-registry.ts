@@ -48,7 +48,7 @@ async function buildRegistry() {
             content,
             target: getTargetPath(file.path),
           };
-        })
+        }),
       ),
     };
 

@@ -270,25 +270,25 @@ The library includes a collection of useful React hooks:
 
 The library includes `Outline` and `Solid` variants of icons:
 
-| Icon | Usage |
-|------|-------|
-| `HtAddOutline` / `HtAddSolid` | Add/plus icon |
-| `HtCalendarOutline` / `HtCalendarSolid` | Calendar icon |
-| `HtCheckOutline` / `HtCheckSolid` | Checkmark icon |
-| `HtChevronDownOutline` / `HtChevronDownSolid` | Chevron down |
-| `HtChevronRightOutline` / `HtChevronRightSolid` | Chevron right |
-| `HtChevronUpOutline` / `HtChevronUpSolid` | Chevron up |
-| `HtEyeOutline` / `HtEyeSolid` | Eye (show) icon |
-| `HtEyeOffOutline` / `HtEyeOffSolid` | Eye off (hide) icon |
-| `HtLockOutline` / `HtLockSolid` | Lock icon |
-| `HtMailOutline` / `HtMailSolid` | Mail/email icon |
-| `HtMinusOutline` / `HtMinusSolid` | Minus icon |
-| `HtSearchOutline` / `HtSearchSolid` | Search icon |
+| Icon                                            | Usage               |
+| ----------------------------------------------- | ------------------- |
+| `HtAddOutline` / `HtAddSolid`                   | Add/plus icon       |
+| `HtCalendarOutline` / `HtCalendarSolid`         | Calendar icon       |
+| `HtCheckOutline` / `HtCheckSolid`               | Checkmark icon      |
+| `HtChevronDownOutline` / `HtChevronDownSolid`   | Chevron down        |
+| `HtChevronRightOutline` / `HtChevronRightSolid` | Chevron right       |
+| `HtChevronUpOutline` / `HtChevronUpSolid`       | Chevron up          |
+| `HtEyeOutline` / `HtEyeSolid`                   | Eye (show) icon     |
+| `HtEyeOffOutline` / `HtEyeOffSolid`             | Eye off (hide) icon |
+| `HtLockOutline` / `HtLockSolid`                 | Lock icon           |
+| `HtMailOutline` / `HtMailSolid`                 | Mail/email icon     |
+| `HtMinusOutline` / `HtMinusSolid`               | Minus icon          |
+| `HtSearchOutline` / `HtSearchSolid`             | Search icon         |
 
 ```tsx
 import { HtCalendarOutline, HtCheckSolid } from "@HeirsHQ/heirs-design-system";
 
-<HtCalendarOutline className="h-5 w-5" />
+<HtCalendarOutline className="h-5 w-5" />;
 ```
 
 ## Utilities
@@ -346,10 +346,10 @@ This project uses GitHub Actions for continuous integration and deployment.
 
 ### Automated Workflows
 
-| Workflow     | Trigger                   | Description                                       |
-| ------------ | ------------------------- | ------------------------------------------------- |
-| **CI**       | Push to `main`, PRs       | Runs typecheck, lint, formatting check, and build |
-| **Publish**  | Release published, Manual | Publishes package to GitHub Packages              |
+| Workflow     | Trigger                   | Description                                        |
+| ------------ | ------------------------- | -------------------------------------------------- |
+| **CI**       | Push to `main`, PRs       | Runs typecheck, lint, formatting check, and build  |
+| **Publish**  | Release published, Manual | Publishes package to GitHub Packages               |
 | **Registry** | Push to `main`, Manual    | Builds and deploys shadcn registry to GitHub Pages |
 
 ### Publishing

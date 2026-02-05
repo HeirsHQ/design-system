@@ -1,9 +1,4 @@
-export type RegistryItemType =
-  | "registry:ui"
-  | "registry:lib"
-  | "registry:hook"
-  | "registry:theme"
-  | "registry:block";
+export type RegistryItemType = "registry:ui" | "registry:lib" | "registry:hook" | "registry:theme" | "registry:block";
 
 export interface RegistryItemFile {
   path: string;
