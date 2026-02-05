@@ -30,3 +30,6 @@ npm-debug.log*
 
 # npm
 .npm
+
+*storybook.log
+storybook-static

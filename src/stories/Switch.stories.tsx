@@ -1,0 +1,74 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Switch } from "../components/switch";
+import { Label } from "../components/label";
+
+const meta: Meta<typeof Switch> = {
+  title: "Components/Switch",
+  component: Switch,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+  argTypes: {
+    disabled: {
+      control: "boolean",
+    },
+    defaultChecked: {
+      control: "boolean",
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {},
+};
+
+export const Checked: Story = {
+  args: {
+    defaultChecked: true,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const DisabledChecked: Story = {
+  args: {
+    disabled: true,
+    defaultChecked: true,
+  },
+};
+
+export const WithLabel: Story = {
+  render: () => (
+    <div className="flex items-center space-x-2">
+      <Switch id="airplane-mode" />
+      <Label htmlFor="airplane-mode">Airplane Mode</Label>
+    </div>
+  ),
+};
+
+export const SettingsExample: Story = {
+  render: () => (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <Label htmlFor="notifications">Push Notifications</Label>
+        <Switch id="notifications" defaultChecked />
+      </div>
+      <div className="flex items-center justify-between">
+        <Label htmlFor="marketing">Marketing Emails</Label>
+        <Switch id="marketing" />
+      </div>
+      <div className="flex items-center justify-between">
+        <Label htmlFor="updates">Product Updates</Label>
+        <Switch id="updates" defaultChecked />
+      </div>
+    </div>
+  ),
+};
