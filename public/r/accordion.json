@@ -1,0 +1,19 @@
+{
+  "name": "accordion",
+  "type": "registry:ui",
+  "dependencies": [
+    "@radix-ui/react-accordion"
+  ],
+  "registryDependencies": [
+    "utils",
+    "icons"
+  ],
+  "files": [
+    {
+      "path": "components/accordion.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\nimport * as AccordionPrimitive from \"@radix-ui/react-accordion\";\n\nimport { HtChevronDownOutline } from \"@/components/ui/icons/chevron-down\";\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Root accordion component. Built on Radix UI Accordion.\n *\n * @example\n * ```tsx\n * <Accordion type=\"single\" collapsible>\n *   <AccordionItem value=\"item-1\">\n *     <AccordionTrigger>Is it accessible?</AccordionTrigger>\n *     <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>\n *   </AccordionItem>\n * </Accordion>\n * ```\n */\nconst Accordion = AccordionPrimitive.Root;\n\n/**\n * Accordion item component props.\n */\nexport interface AccordionItemProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> {}\n\n/**\n * Contains a single accordion section with trigger and content.\n */\nconst AccordionItem = React.forwardRef<React.ElementRef<typeof AccordionPrimitive.Item>, AccordionItemProps>(({ className, ...props }, ref) => (\n  <AccordionPrimitive.Item ref={ref} className={cn(\"border-b border-gray-200\", className)} {...props} />\n));\nAccordionItem.displayName = \"AccordionItem\";\n\n/**\n * Accordion trigger component props.\n */\nexport interface AccordionTriggerProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> {}\n\n/**\n * The clickable header that toggles the accordion content.\n */\nconst AccordionTrigger = React.forwardRef<React.ElementRef<typeof AccordionPrimitive.Trigger>, AccordionTriggerProps>(\n  ({ className, children, ...props }, ref) => (\n    <AccordionPrimitive.Header className=\"flex\">\n      <AccordionPrimitive.Trigger\n        ref={ref}\n        className={cn(\n          \"flex flex-1 items-center justify-between py-4 text-left text-sm font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180\",\n          className,\n        )}\n        {...props}\n      >\n        {children}\n        <HtChevronDownOutline className=\"h-4 w-4 shrink-0 text-gray-500 transition-transform duration-200\" />\n      </AccordionPrimitive.Trigger>\n    </AccordionPrimitive.Header>\n  ),\n);\nAccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName;\n\n/**\n * Accordion content component props.\n */\nexport interface AccordionContentProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content> {}\n\n/**\n * The collapsible content section of an accordion item.\n */\nconst AccordionContent = React.forwardRef<React.ElementRef<typeof AccordionPrimitive.Content>, AccordionContentProps>(\n  ({ className, children, ...props }, ref) => (\n    <AccordionPrimitive.Content\n      ref={ref}\n      className=\"data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden text-sm\"\n      {...props}\n    >\n      <div className={cn(\"pt-0 pb-4\", className)}>{children}</div>\n    </AccordionPrimitive.Content>\n  ),\n);\nAccordionContent.displayName = AccordionPrimitive.Content.displayName;\n\nexport { Accordion, AccordionItem, AccordionTrigger, AccordionContent };\n",
+      "target": "components/ui/accordion.tsx"
+    }
+  ]
+}

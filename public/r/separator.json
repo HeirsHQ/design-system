@@ -1,0 +1,18 @@
+{
+  "name": "separator",
+  "type": "registry:ui",
+  "dependencies": [
+    "@radix-ui/react-separator"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "components/separator.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\r\nimport * as SeparatorPrimitive from \"@radix-ui/react-separator\";\r\n\r\nimport { cn } from \"@/lib/utils\";\r\n\r\n/**\r\n * Separator component props.\r\n */\r\nexport interface SeparatorProps extends React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root> {}\r\n\r\n/**\r\n * A visual separator component built on Radix UI Separator.\r\n *\r\n * @example\r\n * ```tsx\r\n * <div>\r\n *   <p>Above</p>\r\n *   <Separator className=\"my-4\" />\r\n *   <p>Below</p>\r\n * </div>\r\n *\r\n * <div className=\"flex h-5 items-center space-x-4\">\r\n *   <span>Left</span>\r\n *   <Separator orientation=\"vertical\" />\r\n *   <span>Right</span>\r\n * </div>\r\n * ```\r\n */\r\nconst Separator = React.forwardRef<React.ElementRef<typeof SeparatorPrimitive.Root>, SeparatorProps>(\r\n  ({ className, orientation = \"horizontal\", decorative = true, ...props }, ref) => (\r\n    <SeparatorPrimitive.Root\r\n      ref={ref}\r\n      decorative={decorative}\r\n      orientation={orientation}\r\n      className={cn(\"shrink-0 bg-gray-200\", orientation === \"horizontal\" ? \"h-[1px] w-full\" : \"h-full w-[1px]\", className)}\r\n      {...props}\r\n    />\r\n  ),\r\n);\r\nSeparator.displayName = SeparatorPrimitive.Root.displayName;\r\n\r\nexport { Separator };\r\n",
+      "target": "components/ui/separator.tsx"
+    }
+  ]
+}

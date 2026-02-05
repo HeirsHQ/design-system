@@ -1,0 +1,16 @@
+{
+  "name": "utils",
+  "type": "registry:lib",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "files": [
+    {
+      "path": "lib/utils.ts",
+      "type": "registry:lib",
+      "content": "import { type ClassValue, clsx } from \"clsx\";\r\nimport { twMerge } from \"tailwind-merge\";\r\n\r\n/**\r\n * Merges class names using clsx and tailwind-merge.\r\n * Handles conditional classes and resolves Tailwind CSS conflicts.\r\n *\r\n * @param inputs - Class values to merge\r\n * @returns Merged class string\r\n *\r\n * @example\r\n * ```ts\r\n * cn(\"px-2 py-1\", \"px-4\") // => \"py-1 px-4\"\r\n * cn(\"text-red-500\", isActive && \"text-blue-500\")\r\n * ```\r\n */\r\nexport function cn(...inputs: ClassValue[]) {\r\n  return twMerge(clsx(inputs));\r\n}\r\n",
+      "target": "lib/utils.ts"
+    }
+  ]
+}

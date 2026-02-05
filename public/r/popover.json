@@ -1,0 +1,18 @@
+{
+  "name": "popover",
+  "type": "registry:ui",
+  "dependencies": [
+    "@radix-ui/react-popover"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "components/popover.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\nimport * as PopoverPrimitive from \"@radix-ui/react-popover\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Root popover component. Built on Radix UI Popover.\n *\n * @example\n * ```tsx\n * <Popover>\n *   <PopoverTrigger asChild>\n *     <Button variant=\"outline\">Open popover</Button>\n *   </PopoverTrigger>\n *   <PopoverContent>\n *     <p>Popover content</p>\n *   </PopoverContent>\n * </Popover>\n * ```\n */\nconst Popover = PopoverPrimitive.Root;\n\nconst PopoverTrigger = PopoverPrimitive.Trigger;\n\nconst PopoverAnchor = PopoverPrimitive.Anchor;\n\n/**\n * Popover content component props.\n */\nexport interface PopoverContentProps extends React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> {}\n\n/**\n * The floating content panel of the popover.\n */\nconst PopoverContent = React.forwardRef<React.ElementRef<typeof PopoverPrimitive.Content>, PopoverContentProps>(\n  ({ className, align = \"center\", sideOffset = 4, ...props }, ref) => (\n    <PopoverPrimitive.Portal>\n      <PopoverPrimitive.Content\n        ref={ref}\n        align={align}\n        sideOffset={sideOffset}\n        className={cn(\n          \"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-72 rounded-md border border-gray-200 bg-white p-4 text-gray-900 shadow-md outline-none\",\n          className,\n        )}\n        {...props}\n      />\n    </PopoverPrimitive.Portal>\n  ),\n);\nPopoverContent.displayName = PopoverPrimitive.Content.displayName;\n\nexport { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };\n",
+      "target": "components/ui/popover.tsx"
+    }
+  ]
+}

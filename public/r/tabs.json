@@ -1,0 +1,18 @@
+{
+  "name": "tabs",
+  "type": "registry:ui",
+  "dependencies": [
+    "@radix-ui/react-tabs"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "components/tabs.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\nimport * as TabsPrimitive from \"@radix-ui/react-tabs\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Root tabs component. Built on Radix UI Tabs.\n *\n * @example\n * ```tsx\n * <Tabs defaultValue=\"account\">\n *   <TabsList>\n *     <TabsTrigger value=\"account\">Account</TabsTrigger>\n *     <TabsTrigger value=\"password\">Password</TabsTrigger>\n *   </TabsList>\n *   <TabsContent value=\"account\">Account settings here.</TabsContent>\n *   <TabsContent value=\"password\">Password settings here.</TabsContent>\n * </Tabs>\n * ```\n */\nconst Tabs = TabsPrimitive.Root;\n\n/**\n * Tabs list component props.\n */\nexport interface TabsListProps extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> {}\n\n/**\n * Container for tab triggers.\n */\nconst TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.List>, TabsListProps>(({ className, ...props }, ref) => (\n  <TabsPrimitive.List\n    ref={ref}\n    className={cn(\"inline-flex h-9 items-center justify-center rounded-lg bg-gray-100 p-1 text-gray-500\", className)}\n    {...props}\n  />\n));\nTabsList.displayName = TabsPrimitive.List.displayName;\n\n/**\n * Tabs trigger component props.\n */\nexport interface TabsTriggerProps extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> {}\n\n/**\n * Clickable tab button.\n */\nconst TabsTrigger = React.forwardRef<React.ElementRef<typeof TabsPrimitive.Trigger>, TabsTriggerProps>(({ className, ...props }, ref) => (\n  <TabsPrimitive.Trigger\n    ref={ref}\n    className={cn(\n      \"focus-visible:ring-primary-400 inline-flex items-center justify-center rounded-md px-3 py-1 text-sm font-medium whitespace-nowrap transition-all focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow\",\n      className,\n    )}\n    {...props}\n  />\n));\nTabsTrigger.displayName = TabsPrimitive.Trigger.displayName;\n\n/**\n * Tabs content component props.\n */\nexport interface TabsContentProps extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content> {}\n\n/**\n * Content panel for a tab.\n */\nconst TabsContent = React.forwardRef<React.ElementRef<typeof TabsPrimitive.Content>, TabsContentProps>(({ className, ...props }, ref) => (\n  <TabsPrimitive.Content\n    ref={ref}\n    className={cn(\"focus-visible:ring-primary-400 mt-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none\", className)}\n    {...props}\n  />\n));\nTabsContent.displayName = TabsPrimitive.Content.displayName;\n\nexport { Tabs, TabsList, TabsTrigger, TabsContent };\n",
+      "target": "components/ui/tabs.tsx"
+    }
+  ]
+}

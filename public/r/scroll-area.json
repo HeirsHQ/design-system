@@ -1,0 +1,18 @@
+{
+  "name": "scroll-area",
+  "type": "registry:ui",
+  "dependencies": [
+    "@radix-ui/react-scroll-area"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "components/scroll-area.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\nimport * as ScrollAreaPrimitive from \"@radix-ui/react-scroll-area\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Scroll area component props.\n */\nexport interface ScrollAreaProps extends React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> {}\n\n/**\n * A scroll area component built on Radix UI Scroll Area.\n *\n * @example\n * ```tsx\n * <ScrollArea className=\"h-[200px] w-[350px] rounded-md border p-4\">\n *   <p>Long content that needs scrolling...</p>\n * </ScrollArea>\n * ```\n */\nconst ScrollArea = React.forwardRef<React.ElementRef<typeof ScrollAreaPrimitive.Root>, ScrollAreaProps>(({ className, children, ...props }, ref) => (\n  <ScrollAreaPrimitive.Root ref={ref} className={cn(\"relative overflow-hidden\", className)} {...props}>\n    <ScrollAreaPrimitive.Viewport className=\"h-full w-full rounded-[inherit]\">{children}</ScrollAreaPrimitive.Viewport>\n    <ScrollBar />\n    <ScrollAreaPrimitive.Corner />\n  </ScrollAreaPrimitive.Root>\n));\nScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;\n\n/**\n * Scroll bar component props.\n */\nexport interface ScrollBarProps extends React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar> {}\n\n/**\n * The scrollbar element of the scroll area.\n */\nconst ScrollBar = React.forwardRef<React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>, ScrollBarProps>(\n  ({ className, orientation = \"vertical\", ...props }, ref) => (\n    <ScrollAreaPrimitive.ScrollAreaScrollbar\n      ref={ref}\n      orientation={orientation}\n      className={cn(\n        \"flex touch-none transition-colors select-none\",\n        orientation === \"vertical\" && \"h-full w-2.5 border-l border-l-transparent p-[1px]\",\n        orientation === \"horizontal\" && \"h-2.5 flex-col border-t border-t-transparent p-[1px]\",\n        className,\n      )}\n      {...props}\n    >\n      <ScrollAreaPrimitive.ScrollAreaThumb className=\"relative flex-1 rounded-full bg-gray-300\" />\n    </ScrollAreaPrimitive.ScrollAreaScrollbar>\n  ),\n);\nScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;\n\nexport { ScrollArea, ScrollBar };\n",
+      "target": "components/ui/scroll-area.tsx"
+    }
+  ]
+}

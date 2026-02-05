@@ -1,0 +1,18 @@
+{
+  "name": "badge",
+  "type": "registry:ui",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "components/badge.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\n\nconst badgeVariants = cva(\n  \"inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2\",\n  {\n    variants: {\n      variant: {\n        default: \"border-transparent bg-primary-400 text-white shadow hover:bg-primary-500\",\n        secondary: \"border-transparent bg-gray-100 text-gray-700 hover:bg-gray-200\",\n        danger: \"border-transparent bg-red-500 text-white shadow hover:bg-red-600\",\n        success: \"border-transparent bg-green-500 text-white shadow hover:bg-green-600\",\n        info: \"border-transparent bg-blue-500 text-white shadow hover:bg-blue-600\",\n        warning: \"border-transparent bg-yellow-500 text-white shadow hover:bg-yellow-600\",\n        outline: \"border-gray-300 text-gray-700 bg-transparent\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n    },\n  },\n);\n\n/**\n * Badge component props.\n */\nexport interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}\n\n/**\n * A badge component for displaying status, labels, or counts.\n *\n * @example\n * ```tsx\n * <Badge>Default</Badge>\n * <Badge variant=\"secondary\">Secondary</Badge>\n * <Badge variant=\"destructive\">Destructive</Badge>\n * <Badge variant=\"outline\">Outline</Badge>\n * ```\n */\nfunction Badge({ className, variant, ...props }: BadgeProps) {\n  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;\n}\n\nexport { Badge, badgeVariants };\n",
+      "target": "components/ui/badge.tsx"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "progress",
+  "type": "registry:ui",
+  "dependencies": [
+    "@radix-ui/react-progress"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "components/progress.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\nimport * as ProgressPrimitive from \"@radix-ui/react-progress\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Progress component props.\n */\nexport interface ProgressProps extends React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> {}\n\n/**\n * A progress bar component built on Radix UI Progress.\n *\n * @example\n * ```tsx\n * <Progress value={33} />\n * <Progress value={66} className=\"w-[60%]\" />\n * ```\n */\nconst Progress = React.forwardRef<React.ElementRef<typeof ProgressPrimitive.Root>, ProgressProps>(({ className, value, ...props }, ref) => (\n  <ProgressPrimitive.Root ref={ref} className={cn(\"relative h-2 w-full overflow-hidden rounded-full bg-gray-200\", className)} {...props}>\n    <ProgressPrimitive.Indicator\n      className=\"bg-primary-400 h-full w-full flex-1 transition-all\"\n      style={{ transform: `translateX(-${100 - (value ?? 0)}%)` }}\n    />\n  </ProgressPrimitive.Root>\n));\nProgress.displayName = ProgressPrimitive.Root.displayName;\n\nexport { Progress };\n",
+      "target": "components/ui/progress.tsx"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "button",
+  "type": "registry:ui",
+  "dependencies": [
+    "@radix-ui/react-slot",
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "components/button.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\nimport { Slot } from \"@radix-ui/react-slot\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\n\nconst buttonVariants = cva(\n  \"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-primary-400 text-white shadow hover:bg-primary-500\",\n        \"default-outline\": \"border border-primary-400 bg-transparent text-primary-400 hover:bg-primary-50\",\n        danger: \"bg-red-500 text-white shadow-sm hover:bg-red-600\",\n        \"danger-outline\": \"border border-red-500 bg-transparent text-red-500 hover:bg-red-50\",\n        success: \"bg-green-500 text-white shadow-sm hover:bg-green-600\",\n        \"success-outline\": \"border border-green-500 bg-transparent text-green-500 hover:bg-green-50\",\n        info: \"bg-blue-500 text-white shadow-sm hover:bg-blue-600\",\n        \"info-outline\": \"border border-blue-500 bg-transparent text-blue-500 hover:bg-blue-50\",\n        warning: \"bg-yellow-500 text-white shadow-sm hover:bg-yellow-600\",\n        \"warning-outline\": \"border border-yellow-500 bg-transparent text-yellow-500 hover:bg-yellow-50\",\n        secondary: \"bg-gray-500 text-white shadow-sm hover:bg-gray-600\",\n        \"secondary-outline\": \"border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50\",\n        ghost: \"bg-transparent text-gray-700 hover:bg-gray-100\",\n      },\n      size: {\n        default: \"h-9 px-4 py-2\",\n        sm: \"h-8 rounded-md px-3 text-xs\",\n        lg: \"h-10 rounded-md px-8\",\n        icon: \"h-9 w-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  },\n);\n\n/**\n * Button component props.\n */\nexport interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {\n  /**\n   * If true, the button will render as a Slot component,\n   * allowing you to pass a custom element as the button.\n   */\n  asChild?: boolean;\n}\n\n/**\n * A customizable button component with multiple variants and sizes.\n *\n * @example\n * ```tsx\n * <Button variant=\"default\">Click me</Button>\n * <Button variant=\"destructive\" size=\"lg\">Delete</Button>\n * <Button variant=\"outline\" asChild>\n *   <a href=\"/link\">Link Button</a>\n * </Button>\n * ```\n */\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild = false, ...props }, ref) => {\n  const Comp = asChild ? Slot : \"button\";\n  return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;\n});\nButton.displayName = \"Button\";\n\nexport { Button, buttonVariants };\n",
+      "target": "components/ui/button.tsx"
+    }
+  ]
+}

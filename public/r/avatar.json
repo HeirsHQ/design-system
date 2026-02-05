@@ -1,0 +1,18 @@
+{
+  "name": "avatar",
+  "type": "registry:ui",
+  "dependencies": [
+    "@radix-ui/react-avatar"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "components/avatar.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\nimport * as AvatarPrimitive from \"@radix-ui/react-avatar\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Avatar component props.\n */\nexport interface AvatarProps extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> {}\n\n/**\n * Root avatar component. Built on Radix UI Avatar.\n *\n * @example\n * ```tsx\n * <Avatar>\n *   <AvatarImage src=\"https://github.com/shadcn.png\" alt=\"@shadcn\" />\n *   <AvatarFallback>CN</AvatarFallback>\n * </Avatar>\n * ```\n */\nconst Avatar = React.forwardRef<React.ElementRef<typeof AvatarPrimitive.Root>, AvatarProps>(({ className, ...props }, ref) => (\n  <AvatarPrimitive.Root ref={ref} className={cn(\"relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full\", className)} {...props} />\n));\nAvatar.displayName = AvatarPrimitive.Root.displayName;\n\n/**\n * Avatar image component props.\n */\nexport interface AvatarImageProps extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image> {}\n\n/**\n * The image element of the avatar.\n */\nconst AvatarImage = React.forwardRef<React.ElementRef<typeof AvatarPrimitive.Image>, AvatarImageProps>(({ className, ...props }, ref) => (\n  <AvatarPrimitive.Image ref={ref} className={cn(\"aspect-square h-full w-full\", className)} {...props} />\n));\nAvatarImage.displayName = AvatarPrimitive.Image.displayName;\n\n/**\n * Avatar fallback component props.\n */\nexport interface AvatarFallbackProps extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback> {}\n\n/**\n * Fallback content shown when image fails to load.\n */\nconst AvatarFallback = React.forwardRef<React.ElementRef<typeof AvatarPrimitive.Fallback>, AvatarFallbackProps>(({ className, ...props }, ref) => (\n  <AvatarPrimitive.Fallback\n    ref={ref}\n    className={cn(\"flex h-full w-full items-center justify-center rounded-full bg-gray-100 text-gray-700\", className)}\n    {...props}\n  />\n));\nAvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;\n\nexport { Avatar, AvatarImage, AvatarFallback };\n",
+      "target": "components/ui/avatar.tsx"
+    }
+  ]
+}
