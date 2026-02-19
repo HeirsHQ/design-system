@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DashboardLayout } from "../components/dashboard-layout";
-import { Header, HeaderLogo, HeaderNav, HeaderActions } from "../components/header";
-import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarItem } from "../components/sidebar";
-import { Button } from "../components/button";
+
+import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarItem } from "../components/sidebar.js";
+import { Header, HeaderLogo, HeaderNav, HeaderActions } from "../components/header.js";
+import { DashboardLayout } from "../components/dashboard-layout.js";
+import { Button } from "../components/button.js";
 
 const meta: Meta<typeof DashboardLayout> = {
   title: "Components/DashboardLayout",
@@ -94,7 +95,7 @@ export const WithStickyHeader: Story = {
         <Sidebar>
           <SidebarHeader>
             <div className="flex items-center gap-2">
-              <div className="flex size-8 items-center justify-center rounded-md bg-primary-400 text-sm font-bold text-white">H</div>
+              <div className="bg-primary-400 flex size-8 items-center justify-center rounded-md text-sm font-bold text-white">H</div>
               <span className="font-semibold">Heirs</span>
             </div>
           </SidebarHeader>

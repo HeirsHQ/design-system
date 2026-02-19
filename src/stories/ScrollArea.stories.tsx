@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ScrollArea } from "../components/scroll-area";
-import { Separator } from "../components/separator";
+
+import { ScrollArea } from "../components/scroll-area.js";
+import { Separator } from "../components/separator.js";
 
 const meta: Meta<typeof ScrollArea> = {
   title: "Components/ScrollArea",
@@ -48,7 +49,7 @@ export const HorizontalScroll: Story = {
 
 export const LongContent: Story = {
   render: () => (
-    <ScrollArea className="h-[200px] w-[350px] rounded-md border p-4">
+    <ScrollArea className="h-50 w-87.5 rounded-md border p-4">
       <h4 className="mb-4 text-sm font-medium">Long Content Example</h4>
       <p className="text-sm text-gray-600">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim

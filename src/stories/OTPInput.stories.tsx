@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { OTPInput, OTPInputGroup, OTPInputSlot, OTPInputSeparator } from "../components/otp-input";
+
+import { OTPInput, OTPInputGroup, OTPInputSlot, OTPInputSeparator } from "../components/otp-input.js";
 
 const meta: Meta<typeof OTPInput> = {
   title: "Components/OTPInput",

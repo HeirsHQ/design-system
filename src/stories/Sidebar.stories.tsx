@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarItem } from "../components/sidebar";
+
+import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarItem } from "../components/sidebar.js";
 
 const meta: Meta<typeof Sidebar> = {
   title: "Components/Sidebar",
@@ -19,7 +20,7 @@ const meta: Meta<typeof Sidebar> = {
   },
   decorators: [
     (Story) => (
-      <div className="h-[500px]">
+      <div className="h-125">
         <Story />
       </div>
     ),
@@ -60,7 +61,7 @@ export const Compact: Story = {
   render: () => (
     <Sidebar variant="compact">
       <SidebarHeader className="justify-center px-0">
-        <div className="flex size-8 items-center justify-center rounded-md bg-primary-400 text-sm font-bold text-white">H</div>
+        <div className="bg-primary-400 flex size-8 items-center justify-center rounded-md text-sm font-bold text-white">H</div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -89,7 +90,7 @@ export const Collapsed: Story = {
   render: (args) => (
     <Sidebar {...args}>
       <SidebarHeader className="justify-center px-0">
-        <div className="flex size-8 items-center justify-center rounded-md bg-primary-400 text-sm font-bold text-white">H</div>
+        <div className="bg-primary-400 flex size-8 items-center justify-center rounded-md text-sm font-bold text-white">H</div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

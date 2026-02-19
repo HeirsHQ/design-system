@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Header, HeaderLogo, HeaderNav, HeaderActions } from "../components/header";
-import { Button } from "../components/button";
+
+import { Header, HeaderLogo, HeaderNav, HeaderActions } from "../components/header.js";
+import { Button } from "../components/button.js";
 
 const meta: Meta<typeof Header> = {
   title: "Components/Header",
@@ -50,12 +51,12 @@ export const WithLogoImage: Story = {
     <Header>
       <HeaderLogo>
         <div className="flex items-center gap-2">
-          <div className="flex size-8 items-center justify-center rounded-md bg-primary-400 text-sm font-bold text-white">H</div>
+          <div className="bg-primary-400 flex size-8 items-center justify-center rounded-md text-sm font-bold text-white">H</div>
           <span className="font-semibold">Heirs</span>
         </div>
       </HeaderLogo>
       <HeaderNav>
-        <a href="#" className="text-sm font-medium text-primary-600">
+        <a href="#" className="text-primary-600 text-sm font-medium">
           Home
         </a>
         <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
@@ -74,7 +75,7 @@ export const WithLogoImage: Story = {
 
 export const Sticky: Story = {
   render: () => (
-    <div className="h-[600px] overflow-y-auto">
+    <div className="h-150 overflow-y-auto">
       <Header sticky>
         <HeaderLogo>
           <span className="text-lg font-bold">StickyHeader</span>

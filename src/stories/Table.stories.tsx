@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../components/table";
+
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../components/table.js";
 
 const meta: Meta<typeof Table> = {
   title: "Components/Table",
@@ -10,7 +11,7 @@ const meta: Meta<typeof Table> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="w-[600px]">
+      <div className="w-150">
         <Story />
       </div>
     ),
@@ -34,7 +35,7 @@ export const Default: Story = {
       <TableCaption>A list of your recent invoices.</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">Invoice</TableHead>
+          <TableHead className="w-25">Invoice</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Method</TableHead>
           <TableHead className="text-right">Amount</TableHead>

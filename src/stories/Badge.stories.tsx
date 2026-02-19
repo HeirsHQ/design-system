@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Badge } from "../components/badge";
+
+import { Badge } from "../components/badge.js";
 
 const meta: Meta<typeof Badge> = {
   title: "Components/Badge",

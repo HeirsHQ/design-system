@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../components/dialog";
-import { Button } from "../components/button";
-import { Input } from "../components/input";
-import { Label } from "../components/label";
+
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../components/dialog.js";
+import { Button } from "../components/button.js";
+import { Input } from "../components/input.js";
+import { Label } from "../components/label.js";
 
 const meta: Meta<typeof Dialog> = {
   title: "Components/Dialog",
@@ -44,7 +45,7 @@ export const EditProfile: Story = {
       <DialogTrigger asChild>
         <Button variant="secondary-outline">Edit Profile</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>Make changes to your profile here. Click save when you&apos;re done.</DialogDescription>

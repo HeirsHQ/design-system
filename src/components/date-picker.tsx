@@ -136,7 +136,7 @@ function SimpleCalendar({ selected, onSelect, disabled, className }: SimpleCalen
  */
 export interface DatePickerProps {
   /** The selected date */
-  value?: Date;
+  value?: Date | undefined;
   /** Called when the date changes */
   onChange?: (date: Date | undefined) => void;
   /** Placeholder text when no date is selected */
@@ -173,7 +173,7 @@ function DatePicker({ value, onChange, placeholder = "Pick a date", disabled, cl
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="secondary-outline" className={cn("w-[240px] justify-start text-left font-normal", !value && "text-gray-400", className)}>
+        <Button variant="secondary-outline" className={cn("w-60 justify-start text-left font-normal", !value && "text-gray-400", className)}>
           <HtCalendarOutline className="mr-2 h-4 w-4" />
           {value ? formatDate(value) : placeholder}
         </Button>
