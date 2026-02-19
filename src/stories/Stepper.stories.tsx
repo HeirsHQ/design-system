@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Stepper } from "../components/stepper";
+import { Stepper } from "../components/stepper.js";
 
 const meta: Meta<typeof Stepper> = {
   title: "Components/Stepper",
@@ -19,7 +19,7 @@ const meta: Meta<typeof Stepper> = {
   },
   decorators: [
     (Story) => (
-      <div className="w-[600px]">
+      <div className="w-150">
         <Story />
       </div>
     ),
@@ -84,7 +84,7 @@ export const Clickable: Story = {
 export const ManySteps: Story = {
   decorators: [
     (Story) => (
-      <div className="w-[800px]">
+      <div className="w-200">
         <Story />
       </div>
     ),
