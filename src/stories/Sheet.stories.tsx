@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "../components/sheet";
-import { Button } from "../components/button";
-import { Input } from "../components/input";
+
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "../components/sheet.js";
+import { Button } from "../components/button.js";
+import { Input } from "../components/input.js";
 import { Label } from "../components/label.js";
 
 const meta: Meta<typeof Sheet> = {

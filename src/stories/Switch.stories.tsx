@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Switch } from "../components/switch";
+
+import { Switch } from "../components/switch.js";
 import { Label } from "../components/label.js";
 
 const meta: Meta<typeof Switch> = {
