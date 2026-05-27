@@ -89,7 +89,7 @@ export const NotificationCard: Story = {
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="secondary-outline" className="w-full">
+        <Button variant="outline" className="w-full">
           View all
         </Button>
       </CardFooter>

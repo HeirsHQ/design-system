@@ -21,7 +21,7 @@ export const Default: Story = {
   render: () => (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary-outline">Open Dialog</Button>
+        <Button variant="outline">Open Dialog</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -43,7 +43,7 @@ export const EditProfile: Story = {
   render: () => (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary-outline">Edit Profile</Button>
+        <Button variant="outline">Edit Profile</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
@@ -76,7 +76,7 @@ export const Confirmation: Story = {
   render: () => (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="danger">Delete Account</Button>
+        <Button variant="destructive">Delete Account</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -86,8 +86,8 @@ export const Confirmation: Story = {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="secondary-outline">Cancel</Button>
-          <Button variant="danger">Delete</Button>
+          <Button variant="outline">Cancel</Button>
+          <Button variant="destructive">Delete</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

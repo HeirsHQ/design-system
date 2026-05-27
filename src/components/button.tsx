@@ -1,33 +1,37 @@
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
+import { Slot } from "@radix-ui/react-slot";
 
 import { cn } from "../lib/utils.js";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive  dark:aria-invalid:border-destructive/50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
-        default: "bg-primary-400 text-white shadow hover:bg-primary-500",
-        "default-outline": "border border-primary-400 bg-transparent text-primary-400 hover:bg-primary-50",
-        danger: "bg-red-500 text-white shadow-sm hover:bg-red-600",
-        "danger-outline": "border border-red-500 bg-transparent text-red-500 hover:bg-red-50",
-        success: "bg-green-500 text-white shadow-sm hover:bg-green-600",
-        "success-outline": "border border-green-500 bg-transparent text-green-500 hover:bg-green-50",
-        info: "bg-blue-500 text-white shadow-sm hover:bg-blue-600",
-        "info-outline": "border border-blue-500 bg-transparent text-blue-500 hover:bg-blue-50",
-        warning: "bg-yellow-500 text-white shadow-sm hover:bg-yellow-600",
-        "warning-outline": "border border-yellow-500 bg-transparent text-yellow-500 hover:bg-yellow-50",
-        secondary: "bg-gray-500 text-white shadow-sm hover:bg-gray-600",
-        "secondary-outline": "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50",
-        ghost: "bg-transparent text-gray-700 hover:bg-gray-100",
+        default: "bg-primary-500 text-white [a]:hover:bg-primary-500/80",
+        "default-inverse": "bg-white text-primary-500 [a]:hover:bg-white/80",
+        outline:
+          "border-border bg-background hover:bg-muted dark:bg-neutral-600 hover:text-foreground aria-expanded:bg-muted dark:bg-neutral-600 aria-expanded:text-foreground",
+        secondary:
+          "bg-muted dark:bg-neutral-600 text-foreground hover:bg-muted dark:bg-neutral-600/80 aria-expanded:bg-muted dark:bg-neutral-600 aria-expanded:text-foreground",
+        ghost: "hover:bg-muted dark:bg-neutral-600 hover:text-foreground aria-expanded:bg-muted dark:bg-neutral-600 aria-expanded:text-foreground",
+        destructive: "bg-destructive/10 text-white hover:bg-destructive/20",
+        link: "text-primary underline-offset-4 hover:underline",
+        success: "bg-green-500 text-white [a]:hover:bg-green-500/80",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        icon: "h-9 w-9",
+        default: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        xs: "h-6 gap-1 rounded-[min(var(--radius-md),6px)] px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-[min(var(--radius-md),8px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        md: "h-10 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
+        lg: "h-12 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        xl: "h-14 gap-1.5 px-3.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        "2xl": "h-16 gap-2 px-4 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 text-lg font-medium",
+        icon: "size-8",
+        "icon-xs": "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3",
+        "icon-sm": "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-md",
+        "icon-lg": "size-9",
       },
     },
     defaultVariants: {
@@ -37,33 +41,29 @@ const buttonVariants = cva(
   },
 );
 
-/**
- * Button component props.
- */
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
-  /**
-   * If true, the button will render as a Slot component,
-   * allowing you to pass a custom element as the button.
-   */
-  asChild?: boolean;
-}
-
-/**
- * A customizable button component with multiple variants and sizes.
- *
- * @example
- * ```tsx
- * <Button variant="default">Click me</Button>
- * <Button variant="destructive" size="lg">Delete</Button>
- * <Button variant="outline" asChild>
- *   <a href="/link">Link Button</a>
- * </Button>
- * ```
- */
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild = false, ...props }, ref) => {
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  type = "button",
+  asChild = false,
+  ...props
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  }) {
   const Comp = asChild ? Slot : "button";
-  return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
-});
-Button.displayName = "Button";
+
+  return (
+    <Comp
+      data-slot="button"
+      data-variant={variant}
+      data-size={size}
+      className={cn(buttonVariants({ variant, size, className }))}
+      type={type}
+      {...props}
+    />
+  );
+}
 
 export { Button, buttonVariants };

@@ -12,25 +12,11 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: "select",
-      options: [
-        "default",
-        "default-outline",
-        "danger",
-        "danger-outline",
-        "success",
-        "success-outline",
-        "info",
-        "info-outline",
-        "warning",
-        "warning-outline",
-        "secondary",
-        "secondary-outline",
-        "ghost",
-      ],
+      options: ["default", "default-inverse", "outline", "secondary", "ghost", "destructive", "link", "success"],
     },
     size: {
       control: "select",
-      options: ["default", "sm", "lg", "icon"],
+      options: ["default", "xs", "sm", "md", "lg", "xl", "2xl", "icon", "icon-xs", "icon-sm", "icon-lg"],
     },
     disabled: {
       control: "boolean",
@@ -51,66 +37,17 @@ export const Default: Story = {
   },
 };
 
-export const DefaultOutline: Story = {
+export const DefaultInverse: Story = {
   args: {
     children: "Button",
-    variant: "default-outline",
+    variant: "default-inverse",
   },
 };
 
-export const Danger: Story = {
+export const Outline: Story = {
   args: {
-    children: "Delete",
-    variant: "danger",
-  },
-};
-
-export const DangerOutline: Story = {
-  args: {
-    children: "Delete",
-    variant: "danger-outline",
-  },
-};
-
-export const Success: Story = {
-  args: {
-    children: "Save",
-    variant: "success",
-  },
-};
-
-export const SuccessOutline: Story = {
-  args: {
-    children: "Save",
-    variant: "success-outline",
-  },
-};
-
-export const Info: Story = {
-  args: {
-    children: "Info",
-    variant: "info",
-  },
-};
-
-export const InfoOutline: Story = {
-  args: {
-    children: "Info",
-    variant: "info-outline",
-  },
-};
-
-export const Warning: Story = {
-  args: {
-    children: "Warning",
-    variant: "warning",
-  },
-};
-
-export const WarningOutline: Story = {
-  args: {
-    children: "Warning",
-    variant: "warning-outline",
+    children: "Outline",
+    variant: "outline",
   },
 };
 
@@ -121,17 +58,31 @@ export const Secondary: Story = {
   },
 };
 
-export const SecondaryOutline: Story = {
-  args: {
-    children: "Secondary",
-    variant: "secondary-outline",
-  },
-};
-
 export const Ghost: Story = {
   args: {
     children: "Ghost",
     variant: "ghost",
+  },
+};
+
+export const Destructive: Story = {
+  args: {
+    children: "Delete",
+    variant: "destructive",
+  },
+};
+
+export const Success: Story = {
+  args: {
+    children: "Save",
+    variant: "success",
+  },
+};
+
+export const Link: Story = {
+  args: {
+    children: "Link",
+    variant: "link",
   },
 };
 
@@ -160,18 +111,13 @@ export const AllVariants: Story = {
   render: () => (
     <div className="flex flex-wrap gap-4">
       <Button variant="default">Default</Button>
-      <Button variant="default-outline">Default Outline</Button>
-      <Button variant="danger">Danger</Button>
-      <Button variant="danger-outline">Danger Outline</Button>
-      <Button variant="success">Success</Button>
-      <Button variant="success-outline">Success Outline</Button>
-      <Button variant="info">Info</Button>
-      <Button variant="info-outline">Info Outline</Button>
-      <Button variant="warning">Warning</Button>
-      <Button variant="warning-outline">Warning Outline</Button>
+      <Button variant="default-inverse">Default Inverse</Button>
+      <Button variant="outline">Outline</Button>
       <Button variant="secondary">Secondary</Button>
-      <Button variant="secondary-outline">Secondary Outline</Button>
       <Button variant="ghost">Ghost</Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="success">Success</Button>
+      <Button variant="link">Link</Button>
     </div>
   ),
 };

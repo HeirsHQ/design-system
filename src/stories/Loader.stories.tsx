@@ -119,7 +119,7 @@ export const InButton: Story = {
         <ButtonLoader />
         Submitting...
       </Button>
-      <Button variant="default-outline" disabled>
+      <Button variant="outline" disabled>
         <ButtonLoader variant="dots" />
         Loading...
       </Button>

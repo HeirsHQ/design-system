@@ -1,188 +1,152 @@
-import * as React from "react";
+"use client";
 
-import { HtCalendarOutline } from "../icons/calendar.js";
-import { cn } from "../lib/utils.js";
-import { Button } from "./button.js";
+import { format } from "date-fns";
+import { useState } from "react";
+
 import { Popover, PopoverContent, PopoverTrigger } from "./popover.js";
+import { Calendar, type DateRange } from "./calendar.js";
+import { HtCalendarOutline } from "../icons/index.js";
+import { cn } from "../lib/utils.js";
 
-/**
- * Simple calendar props.
- */
-interface SimpleCalendarProps {
-  selected?: Date | undefined;
-  onSelect?: ((date: Date | undefined) => void) | undefined;
-  disabled?: ((date: Date) => boolean) | undefined;
-  className?: string | undefined;
-}
+type SingleDatePickerProps = {
+  onValueChange: (date: Date | undefined) => void;
+  type: "single";
+  value: Date | undefined;
+  className?: string;
+  label?: string;
+  labelClassName?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  minDate?: Date;
+  maxDate?: Date;
+  disabledDates?: Date[];
+  onBlur?: () => void;
+  error?: boolean;
+};
 
-/**
- * A simple built-in calendar component.
- */
-function SimpleCalendar({ selected, onSelect, disabled, className }: SimpleCalendarProps) {
-  const [currentMonth, setCurrentMonth] = React.useState(() => selected ?? new Date());
+type RangeDatePickerProps = {
+  onValueChange: (range: DateRange) => void;
+  type: "range";
+  value: DateRange;
+  className?: string;
+  label?: string;
+  labelClassName?: string;
+  placeholderFrom?: string;
+  placeholderTo?: string;
+  disabled?: boolean;
+  minDate?: Date;
+  maxDate?: Date;
+  disabledDates?: Date[];
+  onBlur?: () => void;
+  error?: boolean;
+};
 
-  const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-  const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+type Props = SingleDatePickerProps | RangeDatePickerProps;
 
-  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const emptyDays = Array.from({ length: firstDayOfMonth }, (_, i) => i);
+export const DatePicker = (props: Props) => {
+  const { className, label, labelClassName, type, disabled = false, minDate, maxDate, disabledDates } = props;
+  const [open, setOpen] = useState(false);
 
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-  const prevMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  const handleOpenChange = (nextOpen: boolean, onBlur?: () => void) => {
+    setOpen(nextOpen);
+    if (!nextOpen && onBlur) onBlur();
   };
 
-  const nextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
-  };
+  if (type === "range") {
+    const { value, onValueChange, placeholderFrom = "Start date", placeholderTo = "End date", onBlur, error } = props as RangeDatePickerProps;
+    const fromDisplay = value.from ? format(value.from, "MMM dd, yyyy") : "";
+    const toDisplay = value.to ? format(value.to, "MMM dd, yyyy") : "";
 
-  const isSelected = (day: number) => {
-    if (!selected) return false;
-    return selected.getDate() === day && selected.getMonth() === currentMonth.getMonth() && selected.getFullYear() === currentMonth.getFullYear();
-  };
+    const handleRangeSelect = (range: DateRange) => {
+      onValueChange(range);
+      if (range.from && range.to) {
+        setOpen(false);
+        onBlur?.();
+      }
+    };
 
-  const isDisabled = (day: number) => {
-    if (!disabled) return false;
-    return disabled(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day));
-  };
+    const triggerClass = cn(
+      "flex h-10 flex-1 items-center justify-between gap-x-2 rounded-md border bg-white px-3 text-sm transition-colors dark:bg-neutral-800",
+      "focus:border-primary-500 focus:ring-primary-500/20 hover:border-neutral-400 focus:ring-2 focus:outline-none",
+      disabled && "cursor-not-allowed opacity-50",
+      error ? "border-red-500" : "border-neutral-300",
+    );
 
-  const isToday = (day: number) => {
-    const today = new Date();
-    return today.getDate() === day && today.getMonth() === currentMonth.getMonth() && today.getFullYear() === currentMonth.getFullYear();
+    return (
+      <div className={cn("flex flex-col gap-y-1", className)}>
+        {label && <label className={cn("text-sm font-medium text-neutral-700", labelClassName)}>{label}</label>}
+        <Popover open={open} onOpenChange={(o) => handleOpenChange(o, onBlur)}>
+          <PopoverTrigger asChild>
+            <div className="flex items-center gap-x-2">
+              <button type="button" disabled={disabled} className={cn(triggerClass, !fromDisplay && "text-neutral-400")}>
+                <span className="truncate">{fromDisplay || placeholderFrom}</span>
+                <HtCalendarOutline className="size-4 shrink-0 text-neutral-500" />
+              </button>
+              <span className="text-neutral-400">-</span>
+              <button type="button" disabled={disabled} className={cn(triggerClass, !toDisplay && "text-neutral-400")}>
+                <span className="truncate">{toDisplay || placeholderTo}</span>
+                <HtCalendarOutline className="size-4 shrink-0 text-neutral-500" />
+              </button>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-3" align="start">
+            <Calendar
+              mode="range"
+              numberOfMonths={2}
+              value={value}
+              onSelect={handleRangeSelect}
+              minDate={minDate}
+              maxDate={maxDate}
+              disabledDates={disabledDates || []}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+    );
+  }
+
+  const { value, onValueChange, placeholder = "Select date", onBlur, error } = props as SingleDatePickerProps;
+  const displayValue = value ? format(value, "MMM dd, yyyy") : "";
+
+  const handleSingleSelect = (date: Date | undefined) => {
+    onValueChange(date);
+    if (date) {
+      setOpen(false);
+      onBlur?.();
+    }
   };
 
   return (
-    <div className={cn("p-3", className)}>
-      <div className="mb-4 flex items-center justify-between">
-        <Button variant="secondary-outline" size="icon" className="h-7 w-7" onClick={prevMonth}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-4 w-4"
+    <div className={cn("flex flex-col gap-y-1", className)}>
+      {label && <label className={cn("text-sm font-medium text-neutral-700", labelClassName)}>{label}</label>}
+      <Popover open={open} onOpenChange={(o) => handleOpenChange(o, onBlur)}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            disabled={disabled}
+            className={cn(
+              "flex h-10 w-full items-center justify-between gap-x-2 rounded-md border bg-white px-3 text-sm transition-colors dark:bg-neutral-800",
+              "focus:border-primary-500 focus:ring-primary-500/20 hover:border-neutral-400 focus:ring-2 focus:outline-none",
+              disabled && "cursor-not-allowed opacity-50",
+              !displayValue && "text-neutral-400",
+              error ? "border-red-500" : "border-neutral-300",
+            )}
           >
-            <path d="m15 18-6-6 6-6" />
-          </svg>
-        </Button>
-        <span className="text-sm font-medium">
-          {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-        </span>
-        <Button variant="secondary-outline" size="icon" className="h-7 w-7" onClick={nextMonth}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-4 w-4"
-          >
-            <path d="m9 18 6-6-6-6" />
-          </svg>
-        </Button>
-      </div>
-      <div className="mb-2 grid grid-cols-7 gap-1 text-center text-xs text-gray-500">
-        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
-          <div key={day} className="flex h-8 items-center justify-center">
-            {day}
-          </div>
-        ))}
-      </div>
-      <div className="grid grid-cols-7 gap-1">
-        {emptyDays.map((_, i) => (
-          <div key={`empty-${i}`} className="h-8" />
-        ))}
-        {days.map((day) => {
-          const dayDisabled = isDisabled(day);
-          return (
-            <button
-              key={day}
-              disabled={dayDisabled}
-              onClick={() => {
-                if (!dayDisabled) {
-                  onSelect?.(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day));
-                }
-              }}
-              className={cn(
-                "h-8 w-8 rounded-md text-sm text-gray-900 transition-colors",
-                "hover:bg-gray-100",
-                "focus:ring-primary-400 focus:ring-2 focus:outline-none",
-                "disabled:pointer-events-none disabled:opacity-50",
-                isSelected(day) && "bg-primary-400 hover:bg-primary-500 text-white",
-                isToday(day) && !isSelected(day) && "bg-gray-100",
-              )}
-            >
-              {day}
-            </button>
-          );
-        })}
-      </div>
+            <span className="truncate">{displayValue || placeholder}</span>
+            <HtCalendarOutline className="size-4 shrink-0 text-neutral-500" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-3" align="start">
+          <Calendar
+            mode="single"
+            value={value}
+            onSelect={handleSingleSelect}
+            minDate={minDate}
+            maxDate={maxDate}
+            disabledDates={disabledDates || []}
+          />
+        </PopoverContent>
+      </Popover>
     </div>
   );
-}
-
-/**
- * Date picker component props.
- */
-export interface DatePickerProps {
-  /** The selected date */
-  value?: Date | undefined;
-  /** Called when the date changes */
-  onChange?: (date: Date | undefined) => void;
-  /** Placeholder text when no date is selected */
-  placeholder?: string;
-  /** Disable specific dates */
-  disabled?: (date: Date) => boolean;
-  /** Additional class names */
-  className?: string;
-}
-
-/**
- * A date picker component with calendar popover.
- *
- * @example
- * ```tsx
- * const [date, setDate] = useState<Date>();
- *
- * <DatePicker
- *   value={date}
- *   onChange={setDate}
- *   placeholder="Pick a date"
- * />
- * ```
- */
-function DatePicker({ value, onChange, placeholder = "Pick a date", disabled, className }: DatePickerProps) {
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="secondary-outline" className={cn("w-60 justify-start text-left font-normal", !value && "text-gray-400", className)}>
-          <HtCalendarOutline className="mr-2 h-4 w-4" />
-          {value ? formatDate(value) : placeholder}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <SimpleCalendar selected={value} onSelect={onChange} disabled={disabled} />
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-export { DatePicker, SimpleCalendar };
+};

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectField } from "../components/select.js";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../components/select.js";
 
 const meta: Meta<typeof Select> = {
   title: "Components/Select",
@@ -60,34 +60,60 @@ export const WithGroups: Story = {
   ),
 };
 
-export const SelectFieldWithLabel: Story = {
+export const WithLabel: Story = {
   render: () => (
-    <SelectField label="Country" placeholder="Select a country">
-      <SelectItem value="us">United States</SelectItem>
-      <SelectItem value="uk">United Kingdom</SelectItem>
-      <SelectItem value="ca">Canada</SelectItem>
-      <SelectItem value="au">Australia</SelectItem>
-    </SelectField>
+    <div className="space-y-1">
+      <label className="text-sm font-medium text-gray-700">Country</label>
+      <Select>
+        <SelectTrigger>
+          <SelectValue placeholder="Select a country" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="us">United States</SelectItem>
+          <SelectItem value="uk">United Kingdom</SelectItem>
+          <SelectItem value="ca">Canada</SelectItem>
+          <SelectItem value="au">Australia</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
   ),
 };
 
-export const SelectFieldWithError: Story = {
+export const WithError: Story = {
   render: () => (
-    <SelectField label="Country" placeholder="Select a country" error="Country is required">
-      <SelectItem value="us">United States</SelectItem>
-      <SelectItem value="uk">United Kingdom</SelectItem>
-      <SelectItem value="ca">Canada</SelectItem>
-    </SelectField>
+    <div className="space-y-1">
+      <label className="text-sm font-medium text-gray-700">Country</label>
+      <Select>
+        <SelectTrigger aria-invalid>
+          <SelectValue placeholder="Select a country" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="us">United States</SelectItem>
+          <SelectItem value="uk">United Kingdom</SelectItem>
+          <SelectItem value="ca">Canada</SelectItem>
+        </SelectContent>
+      </Select>
+      <p className="text-sm text-red-500">Country is required</p>
+    </div>
   ),
 };
 
-export const SelectFieldWithHelperText: Story = {
+export const WithHelperText: Story = {
   render: () => (
-    <SelectField label="Language" placeholder="Select a language" helperText="This will be your display language">
-      <SelectItem value="en">English</SelectItem>
-      <SelectItem value="es">Spanish</SelectItem>
-      <SelectItem value="fr">French</SelectItem>
-    </SelectField>
+    <div className="space-y-1">
+      <label className="text-sm font-medium text-gray-700">Language</label>
+      <Select>
+        <SelectTrigger>
+          <SelectValue placeholder="Select a language" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="en">English</SelectItem>
+          <SelectItem value="es">Spanish</SelectItem>
+          <SelectItem value="fr">French</SelectItem>
+        </SelectContent>
+      </Select>
+      <p className="text-sm text-gray-500">This will be your display language</p>
+    </div>
   ),
 };
 

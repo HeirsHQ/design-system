@@ -1,182 +1,86 @@
-import * as React from "react";
+"use client";
 
-import { cn } from "../lib/utils.js";
-import { type ButtonProps, buttonVariants } from "./button.js";
+import { HtChevronLeftOutline, HtChevronRightOutline, HtChevronsLeftOutline, HtChevronsRightOutline } from "../icons/index.js";
+import { Button } from "./button.js";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select.js";
 
-/**
- * Pagination component props.
- */
-export interface PaginationProps extends React.ComponentProps<"nav"> {}
-
-/**
- * Root pagination component.
- *
- * @example
- * ```tsx
- * <Pagination>
- *   <PaginationContent>
- *     <PaginationItem>
- *       <PaginationPrevious href="#" />
- *     </PaginationItem>
- *     <PaginationItem>
- *       <PaginationLink href="#">1</PaginationLink>
- *     </PaginationItem>
- *     <PaginationItem>
- *       <PaginationLink href="#" isActive>2</PaginationLink>
- *     </PaginationItem>
- *     <PaginationItem>
- *       <PaginationEllipsis />
- *     </PaginationItem>
- *     <PaginationItem>
- *       <PaginationNext href="#" />
- *     </PaginationItem>
- *   </PaginationContent>
- * </Pagination>
- * ```
- */
-const Pagination = ({ className, ...props }: PaginationProps) => (
-  <nav role="navigation" aria-label="pagination" className={cn("mx-auto flex w-full justify-center", className)} {...props} />
-);
-Pagination.displayName = "Pagination";
-
-/**
- * Pagination content component props.
- */
-export interface PaginationContentProps extends React.ComponentProps<"ul"> {}
-
-/**
- * Container for pagination items.
- */
-const PaginationContent = React.forwardRef<HTMLUListElement, PaginationContentProps>(({ className, ...props }, ref) => (
-  <ul ref={ref} className={cn("flex flex-row items-center gap-1", className)} {...props} />
-));
-PaginationContent.displayName = "PaginationContent";
-
-/**
- * Pagination item component props.
- */
-export interface PaginationItemProps extends React.ComponentProps<"li"> {}
-
-/**
- * Individual pagination item wrapper.
- */
-const PaginationItem = React.forwardRef<HTMLLIElement, PaginationItemProps>(({ className, ...props }, ref) => (
-  <li ref={ref} className={cn("", className)} {...props} />
-));
-PaginationItem.displayName = "PaginationItem";
-
-/**
- * Pagination link component props.
- */
-export interface PaginationLinkProps extends Pick<ButtonProps, "size">, React.ComponentProps<"a"> {
-  isActive?: boolean;
+interface Props {
+  /** Current 1-based page number */
+  page: number;
+  /** Number of rows per page */
+  pageSize: number;
+  /** Total number of rows across all pages */
+  total: number;
+  /** Called with the new 1-based page number */
+  onPageChange?: (page: number) => void;
+  /** Called when the user changes the page size */
+  onPageSizeChange?: (pageSize: number) => void;
+  /** Show the rows-per-page selector (default: false) */
+  showPageSizeChange?: boolean;
 }
 
 /**
- * Clickable pagination page link.
+ * Pagination controls with first/prev/next/last buttons, page info,
+ * and an optional rows-per-page selector.
+ *
+ * @example
+ * ```tsx
+ * <Pagination page={page} pageSize={10} total={100} onPageChange={setPage} />
+ * ```
  */
-const PaginationLink = ({ className, isActive, size = "icon", ...props }: PaginationLinkProps) => (
-  <a
-    aria-current={isActive ? "page" : undefined}
-    className={cn(
-      buttonVariants({
-        variant: isActive ? "default-outline" : "ghost",
-        size,
-      }),
-      className,
-    )}
-    {...props}
-  />
-);
-PaginationLink.displayName = "PaginationLink";
+const ROWS_PER_PAGE = ["10", "15", "20", "25", "30"];
 
-/**
- * Pagination previous component props.
- */
-export interface PaginationPreviousProps extends React.ComponentProps<typeof PaginationLink> {}
+export const Pagination = ({ onPageChange, page, pageSize, total, onPageSizeChange, showPageSizeChange = false }: Props) => {
+  const totalPages = Math.ceil(total / pageSize);
+  const start = (page - 1) * pageSize + 1;
+  const end = Math.min(page * pageSize, total);
 
-/**
- * Previous page navigation link.
- */
-const PaginationPrevious = ({ className, ...props }: PaginationPreviousProps) => (
-  <PaginationLink aria-label="Go to previous page" size="default" className={cn("gap-1 pl-2.5", className)} {...props}>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4"
-    >
-      <path d="m15 18-6-6 6-6" />
-    </svg>
-    <span>Previous</span>
-  </PaginationLink>
-);
-PaginationPrevious.displayName = "PaginationPrevious";
+  const canPreviousPage = page > 1;
+  const canNextPage = page < totalPages;
 
-/**
- * Pagination next component props.
- */
-export interface PaginationNextProps extends React.ComponentProps<typeof PaginationLink> {}
-
-/**
- * Next page navigation link.
- */
-const PaginationNext = ({ className, ...props }: PaginationNextProps) => (
-  <PaginationLink aria-label="Go to next page" size="default" className={cn("gap-1 pr-2.5", className)} {...props}>
-    <span>Next</span>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4"
-    >
-      <path d="m9 18 6-6-6-6" />
-    </svg>
-  </PaginationLink>
-);
-PaginationNext.displayName = "PaginationNext";
-
-/**
- * Pagination ellipsis component props.
- */
-export interface PaginationEllipsisProps extends React.ComponentProps<"span"> {}
-
-/**
- * Ellipsis indicator for skipped pages.
- */
-const PaginationEllipsis = ({ className, ...props }: PaginationEllipsisProps) => (
-  <span aria-hidden className={cn("flex h-9 w-9 items-center justify-center", className)} {...props}>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4"
-    >
-      <circle cx="12" cy="12" r="1" />
-      <circle cx="19" cy="12" r="1" />
-      <circle cx="5" cy="12" r="1" />
-    </svg>
-    <span className="sr-only">More pages</span>
-  </span>
-);
-PaginationEllipsis.displayName = "PaginationEllipsis";
-
-export { Pagination, PaginationContent, PaginationLink, PaginationItem, PaginationPrevious, PaginationNext, PaginationEllipsis };
+  return (
+    <div className="flex h-13 w-full items-center justify-between px-4 text-sm">
+      <p className="text-gray-500 dark:text-gray-400">
+        {start}-{end} of {total} rows
+      </p>
+      <div className="flex items-center gap-x-8">
+        {showPageSizeChange && (
+          <div className="flex items-center gap-x-3">
+            <p className="text-gray-500 dark:text-gray-400">Rows per page</p>
+            <Select onValueChange={(value) => onPageSizeChange?.(Number(value))} value={pageSize.toString()}>
+              <SelectTrigger className="w-20">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ROWS_PER_PAGE.map((row) => (
+                  <SelectItem key={row} value={row}>
+                    {row}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+        <div className="flex items-center gap-x-4">
+          <p className="text-gray-500 dark:text-gray-400">
+            Page {page} of {totalPages}
+          </p>
+          <div className="flex items-center gap-x-1">
+            <Button variant="outline" size="icon-sm" onClick={() => onPageChange?.(1)} disabled={!canPreviousPage}>
+              <HtChevronsLeftOutline className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon-sm" onClick={() => onPageChange?.(page - 1)} disabled={!canPreviousPage}>
+              <HtChevronLeftOutline className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon-sm" onClick={() => onPageChange?.(page + 1)} disabled={!canNextPage}>
+              <HtChevronRightOutline className="size-4" />
+            </Button>
+            <Button variant="outline" size="icon-sm" onClick={() => onPageChange?.(totalPages)} disabled={!canNextPage}>
+              <HtChevronsRightOutline className="size-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

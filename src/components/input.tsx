@@ -1,125 +1,86 @@
+"use client";
+
 import * as React from "react";
 
-import { HtCalendarOutline } from "../icons/calendar.js";
-import { HtEyeOffOutline } from "../icons/eye-off.js";
-import { HtSearchOutline } from "../icons/search.js";
-import { HtLockOutline } from "../icons/lock.js";
-import { HtMailOutline } from "../icons/mail.js";
-import { HtEyeOutline } from "../icons/eye.js";
-import { type IconBaseProps } from "../icons/icon-base.js";
+import { HtEyeOutline, HtEyeOffOutline, HtSearchOutline } from "../icons/index.js";
 import { cn } from "../lib/utils.js";
 
-/**
- * Input component props.
- */
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  /** Label text for the input */
-  label?: string | undefined;
-  /** Additional class names for the label */
-  labelClassName?: string | undefined;
-  /** Error message to display */
-  error?: string | undefined;
-  /** Helper text to display below the input */
-  helperText?: string | undefined;
-  /** Hide the automatic icon based on input type */
-  hideTypeIcon?: boolean | undefined;
+type PasswordStrength = "weak" | "fair" | "strong";
+
+function getPasswordStrength(password: string): PasswordStrength | null {
+  if (!password) return null;
+
+  const hasLower = /[a-z]/.test(password);
+  const hasUpper = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecial = /[^a-zA-Z0-9]/.test(password);
+  const isLong = password.length >= 8;
+
+  const score = [hasLower, hasUpper, hasNumber, hasSpecial, isLong].filter(Boolean).length;
+
+  if (score >= 4) return "strong";
+  if (score >= 3) return "fair";
+  return "weak";
 }
 
-type IconComponent = React.ComponentType<Omit<IconBaseProps, "children">>;
-
-const typeIconMap: Record<string, IconComponent> = {
-  email: HtMailOutline,
-  password: HtLockOutline,
-  search: HtSearchOutline,
-  date: HtCalendarOutline,
-  "datetime-local": HtCalendarOutline,
-  month: HtCalendarOutline,
-  week: HtCalendarOutline,
+const strengthConfig: Record<PasswordStrength, { label: string; className: string }> = {
+  weak: { label: "Weak", className: "bg-red-100 text-red-600" },
+  fair: { label: "Fair", className: "bg-yellow-100 text-yellow-600" },
+  strong: { label: "Strong", className: "bg-green-100 text-green-600" },
 };
 
-/**
- * A styled input component with label, error, and helper text support.
- * Automatically shows appropriate icons based on input type.
- *
- * @example
- * ```tsx
- * <Input label="Email" type="email" placeholder="Enter email" />
- * <Input label="Password" type="password" error="Password is required" />
- * <Input label="Username" helperText="This will be your display name" />
- * <Input label="Search" type="search" placeholder="Search..." />
- * ```
- */
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = "text", label, labelClassName, error, helperText, hideTypeIcon, id, ...props }, ref) => {
-    const generatedId = React.useId();
-    const inputId = id ?? generatedId;
-    const [showPassword, setShowPassword] = React.useState(false);
+function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [passwordValue, setPasswordValue] = React.useState("");
 
-    const isPassword = type === "password";
-    const LeftIcon = !hideTypeIcon ? typeIconMap[type] : undefined;
-    const hasLeftIcon = !!LeftIcon;
-    const hasRightIcon = isPassword;
+  const isPassword = type === "password";
+  const isSearch = type === "search";
 
-    const inputType = isPassword && showPassword ? "text" : type;
+  const strength = isPassword ? getPasswordStrength(passwordValue) : null;
 
-    return (
-      <div className="w-full">
-        {label && (
-          <label htmlFor={inputId} className={cn("mb-1.5 block text-sm font-medium text-gray-700", labelClassName)}>
-            {label}
-          </label>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isPassword) setPasswordValue(e.target.value);
+    props.onChange?.(e);
+  };
+
+  return (
+    <div className="relative w-full">
+      {isSearch && <HtSearchOutline className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />}
+      <input
+        type={isPassword && showPassword ? "text" : type}
+        data-slot="input"
+        className={cn(
+          "file:text-foreground input placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-10 w-full min-w-0 appearance-none rounded-md border bg-transparent px-3 py-1 text-base transition-[color,box-shadow,border] duration-500 outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          "focus-visible:border-primary-400",
+          "aria-invalid:border-red-500",
+          "[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+          isPassword && "pr-24",
+          isSearch && "pl-9",
+          className,
         )}
-        <div className="relative">
-          {LeftIcon && (
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <LeftIcon className="h-4 w-4 text-gray-400" />
-            </div>
+        {...props}
+        onChange={handleChange}
+      />
+      {isPassword && (
+        <div className="absolute top-1/2 right-3 flex -translate-y-1/2 items-center gap-1.5">
+          {strength && (
+            <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-semibold", strengthConfig[strength].className)}>
+              {strengthConfig[strength].label}
+            </span>
           )}
-          <input
-            id={inputId}
-            type={inputType}
-            className={cn(
-              "flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base text-gray-900 transition-colors",
-              "placeholder:text-gray-400",
-              "focus-visible:ring-primary-400 focus-visible:border-primary-400 focus-visible:ring-2 focus-visible:outline-none",
-              "disabled:cursor-not-allowed disabled:bg-gray-50 disabled:opacity-50",
-              "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-gray-700",
-              "md:text-sm",
-              error ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500" : "border-gray-300",
-              hasLeftIcon && "pl-9",
-              hasRightIcon && "pr-9",
-              className,
-            )}
-            ref={ref}
-            aria-invalid={error ? "true" : undefined}
-            aria-describedby={error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined}
-            {...props}
-          />
-          {isPassword && (
-            <button
-              type="button"
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
-              onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? <HtEyeOffOutline className="h-4 w-4" /> : <HtEyeOutline className="h-4 w-4" />}
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="text-muted-foreground cursor-pointer"
+            tabIndex={-1}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <HtEyeOffOutline className="size-4" /> : <HtEyeOutline className="size-4" />}
+          </button>
         </div>
-        {error && (
-          <p id={`${inputId}-error`} className="mt-1.5 text-sm text-red-500">
-            {error}
-          </p>
-        )}
-        {helperText && !error && (
-          <p id={`${inputId}-helper`} className="mt-1.5 text-sm text-gray-500">
-            {helperText}
-          </p>
-        )}
-      </div>
-    );
-  },
-);
-Input.displayName = "Input";
+      )}
+    </div>
+  );
+}
 
 export { Input };

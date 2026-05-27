@@ -1,7 +1,6 @@
-export type Maybe<T> = T | null;
+export * from "./form.js";
 
-export type Nullable<T> = T | null | undefined;
-
-export type MaybePromise<T> = T | PromiseLike<T>;
-
-export type MaybePromiseOrNull<T> = MaybePromise<Nullable<T>>;
+export type Maybe<T> = T | null | undefined;
+export type Nullable<T> = T | null;
+export type MaybePromise<T> = T | Promise<T>;
+export type MaybePromiseOrNull<T> = MaybePromise<T> | null;

@@ -1,20 +1,21 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { Slot } from "@radix-ui/react-slot";
 
 import { cn } from "../lib/utils.js";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2",
+  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
       variant: {
-        default: "border-transparent bg-primary-400 text-white shadow hover:bg-primary-500",
-        secondary: "border-transparent bg-gray-100 text-gray-700 hover:bg-gray-200",
-        danger: "border-transparent bg-red-500 text-white shadow hover:bg-red-600",
-        success: "border-transparent bg-green-500 text-white shadow hover:bg-green-600",
-        info: "border-transparent bg-blue-500 text-white shadow hover:bg-blue-600",
-        warning: "border-transparent bg-yellow-500 text-white shadow hover:bg-yellow-600",
-        outline: "border-gray-300 text-gray-700 bg-transparent",
+        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        secondary: "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
+        destructive:
+          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
+        outline: "border-border text-foreground [a]:hover:bg-muted dark:bg-neutral-600 [a]:hover:text-muted-foreground",
+        ghost: "hover:bg-muted dark:bg-neutral-600 hover:text-muted-foreground dark:hover:bg-muted dark:bg-neutral-600/50",
+        link: "text-primary underline-offset-4 hover:underline",
       },
     },
     defaultVariants: {
@@ -23,24 +24,15 @@ const badgeVariants = cva(
   },
 );
 
-/**
- * Badge component props.
- */
-export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
+function Badge({
+  className,
+  variant = "default",
+  asChild = false,
+  ...props
+}: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot : "span";
 
-/**
- * A badge component for displaying status, labels, or counts.
- *
- * @example
- * ```tsx
- * <Badge>Default</Badge>
- * <Badge variant="secondary">Secondary</Badge>
- * <Badge variant="destructive">Destructive</Badge>
- * <Badge variant="outline">Outline</Badge>
- * ```
- */
-function Badge({ className, variant, ...props }: BadgeProps) {
-  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
+  return <Comp data-slot="badge" data-variant={variant} className={cn(badgeVariants({ variant }), className)} {...props} />;
 }
 
 export { Badge, badgeVariants };

@@ -1,0 +1,42 @@
+/* Heirs Design System — required styles
+ *
+ * Import this in your app's global CSS alongside Tailwind:
+ *
+ *   @import "@heirshq/heirs-design-system/styles";
+ *
+ * Also add the dist path to your Tailwind content config so utility
+ * classes used in the components are included in your build:
+ *
+ *   Tailwind v4 (CSS):
+ *     @source "../node_modules/@heirshq/heirs-design-system/dist";
+ *
+ *   Tailwind v3 (tailwind.config.js):
+ *     content: ["./node_modules/@heirshq/heirs-design-system/dist/**\/*.js"]
+ */
+
+/* ── Accordion ─────────────────────────────────────────────────────────── */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}

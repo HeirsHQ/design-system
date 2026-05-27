@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 
-import { DatePicker, SimpleCalendar } from "../components/date-picker.js";
+import { DatePicker } from "../components/date-picker.js";
+import type { DateRange } from "../components/calendar.js";
 
-const meta: Meta<typeof DatePicker> = {
+const meta: Meta = {
   title: "Components/DatePicker",
   component: DatePicker,
   parameters: {
@@ -15,66 +16,60 @@ const meta: Meta<typeof DatePicker> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: function DatePickerExample() {
+export const SingleDate: Story = {
+  render: function SingleDateExample() {
     const [date, setDate] = React.useState<Date | undefined>();
-    return <DatePicker value={date} onChange={setDate} placeholder="Pick a date" />;
+    return <DatePicker type="single" value={date} onValueChange={setDate} placeholder="Pick a date" />;
   },
 };
 
 export const WithSelectedDate: Story = {
   render: function DatePickerWithValue() {
     const [date, setDate] = React.useState<Date | undefined>(new Date());
-    return <DatePicker value={date} onChange={setDate} />;
-  },
-};
-
-export const CustomPlaceholder: Story = {
-  render: function DatePickerCustom() {
-    const [date, setDate] = React.useState<Date | undefined>();
-    return <DatePicker value={date} onChange={setDate} placeholder="Select your birthday" />;
-  },
-};
-
-export const DisabledDates: Story = {
-  render: function DatePickerDisabled() {
-    const [date, setDate] = React.useState<Date | undefined>();
-    const today = new Date();
-
-    // Disable past dates
-    const disablePastDates = (d: Date) => {
-      return d < new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    };
-
-    return (
-      <div className="space-y-2">
-        <p className="text-sm text-gray-500">Past dates are disabled</p>
-        <DatePicker value={date} onChange={setDate} disabled={disablePastDates} placeholder="Select a future date" />
-      </div>
-    );
-  },
-};
-
-export const CalendarOnly: Story = {
-  render: function CalendarExample() {
-    const [date, setDate] = React.useState<Date | undefined>(new Date());
-    return (
-      <div className="rounded-md border">
-        <SimpleCalendar selected={date} onSelect={setDate} />
-      </div>
-    );
+    return <DatePicker type="single" value={date} onValueChange={setDate} />;
   },
 };
 
 export const WithLabel: Story = {
   render: function DatePickerWithLabel() {
     const [date, setDate] = React.useState<Date | undefined>();
+    return <DatePicker type="single" value={date} onValueChange={setDate} label="Date of Birth" placeholder="Select your date of birth" />;
+  },
+};
+
+export const DisabledPicker: Story = {
+  render: function DatePickerDisabled() {
+    const [date, setDate] = React.useState<Date | undefined>();
+    return <DatePicker type="single" value={date} onValueChange={setDate} disabled placeholder="Disabled" />;
+  },
+};
+
+export const WithMinMaxDate: Story = {
+  render: function DatePickerMinMax() {
+    const [date, setDate] = React.useState<Date | undefined>();
+    const today = new Date();
+    const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
     return (
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-700">Date of Birth</label>
-        <DatePicker value={date} onChange={setDate} placeholder="Select your date of birth" />
-        <p className="text-sm text-gray-500">We use this to verify your age</p>
+        <p className="text-sm text-gray-500">Only dates within the next 30 days are selectable</p>
+        <DatePicker type="single" value={date} onValueChange={setDate} minDate={today} maxDate={nextMonth} placeholder="Select a date" />
       </div>
+    );
+  },
+};
+
+export const RangePicker: Story = {
+  render: function DateRangeExample() {
+    const [range, setRange] = React.useState<DateRange>({ from: undefined, to: undefined });
+    return <DatePicker type="range" value={range} onValueChange={setRange} />;
+  },
+};
+
+export const RangePickerWithLabel: Story = {
+  render: function DateRangeWithLabelExample() {
+    const [range, setRange] = React.useState<DateRange>({ from: undefined, to: undefined });
+    return (
+      <DatePicker type="range" value={range} onValueChange={setRange} label="Date Range" placeholderFrom="Start date" placeholderTo="End date" />
     );
   },
 };

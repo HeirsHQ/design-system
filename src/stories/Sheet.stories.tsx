@@ -21,7 +21,7 @@ export const Right: Story = {
   render: () => (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="secondary-outline">Open Sheet</Button>
+        <Button variant="outline">Open Sheet</Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -54,7 +54,7 @@ export const Left: Story = {
   render: () => (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="secondary-outline">Open Left</Button>
+        <Button variant="outline">Open Left</Button>
       </SheetTrigger>
       <SheetContent side="left">
         <SheetHeader>
@@ -83,7 +83,7 @@ export const Top: Story = {
   render: () => (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="secondary-outline">Open Top</Button>
+        <Button variant="outline">Open Top</Button>
       </SheetTrigger>
       <SheetContent side="top">
         <SheetHeader>
@@ -99,7 +99,7 @@ export const Bottom: Story = {
   render: () => (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="secondary-outline">Open Bottom</Button>
+        <Button variant="outline">Open Bottom</Button>
       </SheetTrigger>
       <SheetContent side="bottom">
         <SheetHeader>
@@ -107,7 +107,7 @@ export const Bottom: Story = {
           <SheetDescription>Manage your cookie preferences here.</SheetDescription>
         </SheetHeader>
         <SheetFooter className="mt-4">
-          <Button variant="secondary-outline">Decline All</Button>
+          <Button variant="outline">Decline All</Button>
           <Button>Accept All</Button>
         </SheetFooter>
       </SheetContent>

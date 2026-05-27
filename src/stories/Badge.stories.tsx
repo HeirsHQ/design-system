@@ -12,7 +12,7 @@ const meta: Meta<typeof Badge> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "secondary", "danger", "success", "info", "warning", "outline"],
+      options: ["default", "secondary", "destructive", "outline", "ghost", "link"],
     },
   },
 };
@@ -34,31 +34,10 @@ export const Secondary: Story = {
   },
 };
 
-export const Danger: Story = {
+export const Destructive: Story = {
   args: {
-    children: "Danger",
-    variant: "danger",
-  },
-};
-
-export const Success: Story = {
-  args: {
-    children: "Success",
-    variant: "success",
-  },
-};
-
-export const Info: Story = {
-  args: {
-    children: "Info",
-    variant: "info",
-  },
-};
-
-export const Warning: Story = {
-  args: {
-    children: "Warning",
-    variant: "warning",
+    children: "Destructive",
+    variant: "destructive",
   },
 };
 
@@ -69,16 +48,29 @@ export const Outline: Story = {
   },
 };
 
+export const Ghost: Story = {
+  args: {
+    children: "Ghost",
+    variant: "ghost",
+  },
+};
+
+export const Link: Story = {
+  args: {
+    children: "Link",
+    variant: "link",
+  },
+};
+
 export const AllVariants: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Badge variant="default">Default</Badge>
       <Badge variant="secondary">Secondary</Badge>
-      <Badge variant="danger">Danger</Badge>
-      <Badge variant="success">Success</Badge>
-      <Badge variant="info">Info</Badge>
-      <Badge variant="warning">Warning</Badge>
+      <Badge variant="destructive">Destructive</Badge>
       <Badge variant="outline">Outline</Badge>
+      <Badge variant="ghost">Ghost</Badge>
+      <Badge variant="link">Link</Badge>
     </div>
   ),
 };

@@ -28,7 +28,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const Label = ({ children }: { children: React.ReactNode }) => (
-  <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral-400">{children}</span>
+  <span className="mb-1 block text-xs font-medium tracking-wide text-neutral-400 uppercase">{children}</span>
 );
 
 const Value = ({ children }: { children: React.ReactNode }) => (
@@ -84,9 +84,15 @@ export const UseDisclosure: Story = {
             <Value>{isOpen ? "Open" : "Closed"}</Value>
           </div>
           <div className="flex gap-x-2">
-            <button onClick={open} className="rounded-md bg-green-600 px-3 py-1.5 text-sm text-white">Open</button>
-            <button onClick={close} className="rounded-md bg-red-600 px-3 py-1.5 text-sm text-white">Close</button>
-            <button onClick={toggle} className="rounded-md bg-neutral-900 px-3 py-1.5 text-sm text-white dark:bg-white dark:text-neutral-900">Toggle</button>
+            <button onClick={open} className="rounded-md bg-green-600 px-3 py-1.5 text-sm text-white">
+              Open
+            </button>
+            <button onClick={close} className="rounded-md bg-red-600 px-3 py-1.5 text-sm text-white">
+              Close
+            </button>
+            <button onClick={toggle} className="rounded-md bg-neutral-900 px-3 py-1.5 text-sm text-white dark:bg-white dark:text-neutral-900">
+              Toggle
+            </button>
           </div>
         </div>
       </Card>
@@ -97,18 +103,18 @@ export const UseDisclosure: Story = {
 export const UseCopyToClipboard: Story = {
   name: "useCopyToClipboard",
   render: () => {
-    const { copiedValue, copy, isSuccess } = useCopyToClipboard(2000);
+    const { copiedText, copy, isCopied } = useCopyToClipboard(2000);
 
     return (
       <Card title="useCopyToClipboard">
         <div className="flex flex-col gap-y-2">
           <div>
             <Label>Copied value</Label>
-            <Value>{copiedValue ?? "—"}</Value>
+            <Value>{copiedText ?? "—"}</Value>
           </div>
           <div>
             <Label>Status</Label>
-            <Value>{isSuccess ? "Copied!" : "Idle"}</Value>
+            <Value>{isCopied ? "Copied!" : "Idle"}</Value>
           </div>
           <button
             onClick={() => copy("Hello from Storybook!")}
@@ -168,9 +174,9 @@ export const UseClickOutside: Story = {
           </div>
           <div
             ref={ref}
-            className="grid h-20 place-items-center rounded-lg border-2 border-dashed border-primary-300 bg-primary-50 dark:border-primary-700 dark:bg-primary-950/30"
+            className="border-primary-300 bg-primary-50 dark:border-primary-700 dark:bg-primary-950/30 grid h-20 place-items-center rounded-lg border-2 border-dashed"
           >
-            <span className="text-sm text-primary-600 dark:text-primary-400">Click outside me</span>
+            <span className="text-primary-600 dark:text-primary-400 text-sm">Click outside me</span>
           </div>
         </div>
       </Card>

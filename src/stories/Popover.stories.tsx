@@ -21,7 +21,7 @@ export const Default: Story = {
   render: () => (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="secondary-outline">Open popover</Button>
+        <Button variant="outline">Open popover</Button>
       </PopoverTrigger>
       <PopoverContent>
         <p className="text-sm">This is a popover content.</p>
@@ -34,7 +34,7 @@ export const WithForm: Story = {
   render: () => (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="secondary-outline">Update dimensions</Button>
+        <Button variant="outline">Update dimensions</Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="grid gap-4">
@@ -63,7 +63,7 @@ export const Positions: Story = {
     <div className="flex gap-4">
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="secondary-outline">Top</Button>
+          <Button variant="outline">Top</Button>
         </PopoverTrigger>
         <PopoverContent side="top">
           <p className="text-sm">Popover on top</p>
@@ -71,7 +71,7 @@ export const Positions: Story = {
       </Popover>
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="secondary-outline">Bottom</Button>
+          <Button variant="outline">Bottom</Button>
         </PopoverTrigger>
         <PopoverContent side="bottom">
           <p className="text-sm">Popover on bottom</p>
@@ -79,7 +79,7 @@ export const Positions: Story = {
       </Popover>
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="secondary-outline">Left</Button>
+          <Button variant="outline">Left</Button>
         </PopoverTrigger>
         <PopoverContent side="left">
           <p className="text-sm">Popover on left</p>
@@ -87,7 +87,7 @@ export const Positions: Story = {
       </Popover>
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="secondary-outline">Right</Button>
+          <Button variant="outline">Right</Button>
         </PopoverTrigger>
         <PopoverContent side="right">
           <p className="text-sm">Popover on right</p>

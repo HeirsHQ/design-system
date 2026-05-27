@@ -33,31 +33,36 @@ export const Default: Story = {
 };
 
 export const WithLabel: Story = {
-  args: {
-    label: "Message",
-    placeholder: "Type your message here...",
-  },
+  render: () => (
+    <div className="w-80 space-y-1">
+      <label className="text-sm font-medium text-gray-700">Message</label>
+      <Textarea placeholder="Type your message here..." />
+    </div>
+  ),
 };
 
 export const WithHelperText: Story = {
-  args: {
-    label: "Bio",
-    placeholder: "Tell us about yourself",
-    helperText: "Maximum 500 characters",
-  },
+  render: () => (
+    <div className="w-80 space-y-1">
+      <label className="text-sm font-medium text-gray-700">Bio</label>
+      <Textarea placeholder="Tell us about yourself" />
+      <p className="text-sm text-gray-500">Maximum 500 characters</p>
+    </div>
+  ),
 };
 
 export const WithError: Story = {
-  args: {
-    label: "Description",
-    placeholder: "Enter description",
-    error: "Description is required",
-  },
+  render: () => (
+    <div className="w-80 space-y-1">
+      <label className="text-sm font-medium text-gray-700">Description</label>
+      <Textarea placeholder="Enter description" aria-invalid />
+      <p className="text-sm text-red-500">Description is required</p>
+    </div>
+  ),
 };
 
 export const Disabled: Story = {
   args: {
-    label: "Notes",
     placeholder: "Enter notes",
     disabled: true,
   },

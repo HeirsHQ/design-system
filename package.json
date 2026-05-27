@@ -1,5 +1,5 @@
 {
-  "name": "@HeirsHQ/heirs-design-system",
+  "name": "@heirshq/heirs-design-system",
   "version": "1.0.0",
   "description": "Heirs Design System - A reusable component library",
   "type": "module",
@@ -9,13 +9,14 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    }
+    },
+    "./styles": "./dist/styles.css"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node --input-type=module --eval \"import{copyFileSync}from'node:fs';copyFileSync('src/styles.css','dist/styles.css')\"",
     "build:registry": "tsx scripts/build-registry.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ./src",
@@ -42,10 +43,42 @@
     "url": "https://github.com/HeirsHQ/heirs-design-system.git"
   },
   "peerDependencies": {
+    "@base-ui/react": ">=1.0.0",
+    "cmdk": ">=1.0.0",
     "react": ">=18.0.0",
-    "react-dom": ">=18.0.0"
+    "react-dom": ">=18.0.0",
+    "react-hook-form": ">=7.0.0",
+    "recharts": ">=3.0.0",
+    "sonner": ">=2.0.0",
+    "tailwindcss": ">=4.0.0",
+    "tailwindcss-animate": ">=1.0.7",
+    "zod": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@base-ui/react": {
+      "optional": true
+    },
+    "cmdk": {
+      "optional": true
+    },
+    "react-hook-form": {
+      "optional": true
+    },
+    "recharts": {
+      "optional": true
+    },
+    "sonner": {
+      "optional": true
+    },
+    "tailwindcss-animate": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "@base-ui/react": "^1.5.0",
     "@eslint/js": "^9.18.0",
     "@storybook/addon-a11y": "^10.2.17",
     "@storybook/addon-docs": "^10.2.17",
@@ -55,10 +88,12 @@
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.2.0",
     "@types/react": "^19.2.10",
+    "@types/react-color": "^3.0.13",
     "@types/react-dom": "^19.2.3",
     "@vitest/browser-playwright": "^4.0.18",
     "@vitest/coverage-v8": "^4.0.18",
     "autoprefixer": "^10.4.24",
+    "cmdk": "^1.1.1",
     "eslint": "^9.18.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-storybook": "^10.2.17",
@@ -69,17 +104,22 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "recharts": "^3.8.1",
+    "sonner": "^2.0.7",
     "storybook": "^10.2.17",
     "tailwindcss": "^4.1.18",
+    "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.7.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.21.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "zod": "^4.4.3"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "@hookform/resolvers": "^5.4.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-checkbox": "^1.3.3",
@@ -102,6 +142,8 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.3.0",
+    "react-color": "^2.19.3",
     "react-to-print": "^3.2.0",
     "tailwind-merge": "^3.4.0"
   }

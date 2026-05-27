@@ -1,14 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import * as React from "react";
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationEllipsis,
-} from "../components/pagination.js";
+import { Pagination } from "../components/pagination.js";
 
 const meta: Meta<typeof Pagination> = {
   title: "Components/Pagination",
@@ -23,91 +16,42 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious href="#" />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" isActive>
-            2
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
-  ),
+  render: function PaginationExample() {
+    const [page, setPage] = React.useState(1);
+    return <Pagination page={page} pageSize={10} total={100} onPageChange={setPage} />;
+  },
 };
 
-export const WithEllipsis: Story = {
-  render: () => (
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious href="#" />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">1</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" isActive>
-            2
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">10</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
-  ),
+export const WithPageSizeSelector: Story = {
+  render: function PaginationWithPageSize() {
+    const [page, setPage] = React.useState(1);
+    const [pageSize, setPageSize] = React.useState(10);
+    return (
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        total={200}
+        onPageChange={setPage}
+        onPageSizeChange={(size) => {
+          setPageSize(size);
+          setPage(1);
+        }}
+        showPageSizeChange
+      />
+    );
+  },
 };
 
-export const FirstPage: Story = {
-  render: () => (
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious href="#" className="pointer-events-none opacity-50" />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#" isActive>
-            1
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">2</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">3</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink href="#">20</PaginationLink>
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
-  ),
+export const LastPage: Story = {
+  render: function PaginationLastPage() {
+    const [page, setPage] = React.useState(10);
+    return <Pagination page={page} pageSize={10} total={100} onPageChange={setPage} />;
+  },
+};
+
+export const SmallDataset: Story = {
+  render: function PaginationSmall() {
+    const [page, setPage] = React.useState(1);
+    return <Pagination page={page} pageSize={10} total={25} onPageChange={setPage} />;
+  },
 };

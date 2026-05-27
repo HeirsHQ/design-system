@@ -17,3 +17,18 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+/**
+ * Returns a shallow copy of `params` with all null, undefined, and empty-string
+ * values stripped out. Useful for building clean query payloads.
+ *
+ * @example
+ * ```ts
+ * removeNullorUndefined({ name: "Ada", role: null, age: undefined, note: "" })
+ * // => { name: "Ada" }
+ * ```
+ */
+export function removeNullorUndefined<T extends object>(params: T) {
+  const cleaned = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== null && value !== undefined && value !== ""));
+  return cleaned as Partial<T>;
+}

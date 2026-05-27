@@ -39,9 +39,7 @@ function TaskCard({ task }: { task: Task }) {
       <p className="text-sm font-medium">{task.title}</p>
       <div className="flex items-center justify-between">
         <span className="text-xs text-gray-500 dark:text-gray-400">{task.assignee}</span>
-        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${priorityColors[task.priority]}`}>
-          {task.priority}
-        </span>
+        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${priorityColors[task.priority]}`}>{task.priority}</span>
       </div>
     </div>
   );
@@ -116,8 +114,8 @@ export const CustomEmptyState: Story = {
         columns={columns}
         renderCard={(task: Task) => <TaskCard task={task} />}
         columnEmptyState={
-          <div className="grid min-h-24 place-items-center rounded-lg border border-dashed border-primary-300 bg-primary-50/50 dark:border-primary-700 dark:bg-primary-950/30">
-            <p className="text-sm text-primary-500">Drop items here</p>
+          <div className="border-primary-300 bg-primary-50/50 dark:border-primary-700 dark:bg-primary-950/30 grid min-h-24 place-items-center rounded-lg border border-dashed">
+            <p className="text-primary-500 text-sm">Drop items here</p>
           </div>
         }
       />

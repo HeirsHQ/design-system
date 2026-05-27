@@ -1,6 +1,5 @@
 "use client";
 
-import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import {
@@ -15,24 +14,54 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  horizontalListSortingStrategy,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
-import { Popover, PopoverContent, PopoverTrigger } from "./popover.js";
-import { HtTrashOutline } from "../icons/trash.js";
-import { HtEditOutline } from "../icons/edit.js";
-import { HtMoreOutline } from "../icons/more.js";
+import { HtEditOutline, HtGripVerticalOutline, HtMoreOutline, HtTrashOutline } from "../icons/index.js";
 import { cn } from "../lib/utils.js";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover.js";
 
+/** Built-in named color palette for column header indicators. */
+export type StatusVariant = "amber" | "danger" | "draft" | "info" | "neutral" | "success" | "warning";
+
+/** Maps StatusVariant keys to concrete dot colors for the column header indicator. */
+const VARIANT_COLORS: Record<StatusVariant, string> = {
+  amber: "#d97706",
+  danger: "#dc2626",
+  draft: "#7c3aed",
+  info: "#2563eb",
+  neutral: "#6b7280",
+  success: "#16a34a",
+  warning: "#ca8a04",
+};
+
+const VARIANT_KEYS = new Set<string>(Object.keys(VARIANT_COLORS));
+
+/** Resolves a color value: if it's a StatusVariant key, returns the mapped hex color; otherwise returns the value as-is. */
+function resolveColor(color: string): string {
+  return VARIANT_KEYS.has(color) ? VARIANT_COLORS[color as StatusVariant] : color;
+}
+
+/** Minimum shape required for items used in the Kanban board. */
 export interface KanbanItemBase {
   id: string;
   status: string;
 }
 
+/** Configuration for a single Kanban column. */
 export interface KanbanColumnConfig {
   id: string;
   title: string;
-  color?: string;
+  color?: StatusVariant | (string & {});
 }
 
+/** Payload emitted when a card is dropped into a new position. */
 export interface KanbanDragEndEvent<T extends KanbanItemBase> {
   item: T;
   fromStatus: string;
@@ -46,9 +75,10 @@ interface KanbanProps<T extends KanbanItemBase> {
   columns: KanbanColumnConfig[];
   renderCard: (item: T) => ReactNode;
   onDragEnd?: (event: KanbanDragEndEvent<T>) => void;
+  onColumnsReorder?: (columns: KanbanColumnConfig[]) => void;
   onColumnEdit?: (columnId: string) => void;
   onColumnDelete?: (columnId: string) => void;
-  columnEmptyState?: ReactNode;
+  columnEmptyState?: ReactNode | undefined;
   className?: string;
 }
 
@@ -58,16 +88,16 @@ interface KanbanColumnProps<T extends KanbanItemBase> {
   renderCard: (item: T) => ReactNode;
   onEdit?: (() => void) | undefined;
   onDelete?: (() => void) | undefined;
-  columnEmptyState?: ReactNode;
+  columnEmptyState?: ReactNode | undefined;
+  sortableId: string;
 }
 
 interface KanbanCardProps {
   id: string;
-  status: string;
   children: ReactNode;
 }
 
-function KanbanCard({ id, status, children }: KanbanCardProps) {
+function KanbanCard({ id, children }: KanbanCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
   const style: React.CSSProperties = {
@@ -79,8 +109,6 @@ function KanbanCard({ id, status, children }: KanbanCardProps) {
     <div
       ref={setNodeRef}
       data-slot="kanban-card"
-      data-item-id={id}
-      data-status={status}
       data-dragging={isDragging || undefined}
       style={style}
       className={cn(
@@ -97,18 +125,49 @@ function KanbanCard({ id, status, children }: KanbanCardProps) {
   );
 }
 
-function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onEdit, onDelete, columnEmptyState }: KanbanColumnProps<T>) {
-  const { setNodeRef, isOver } = useDroppable({ id: config.id });
+function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onEdit, onDelete, columnEmptyState, sortableId }: KanbanColumnProps<T>) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef: setSortableRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: sortableId,
+    data: { type: "column", columnId: config.id },
+  });
+
+  const { setNodeRef: setDroppableRef, isOver } = useDroppable({ id: config.id });
   const hasActions = !!onEdit || !!onDelete;
 
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   return (
-    <div data-slot="kanban-column" data-status={config.id} className="flex w-72 shrink-0 flex-col gap-y-2">
+    <div
+      ref={setSortableRef}
+      style={style}
+      data-slot="kanban-column"
+      data-status={config.id}
+      className={cn("flex w-72 shrink-0 flex-col gap-y-2", isDragging && "z-50 opacity-50")}
+    >
       <div
         data-slot="kanban-column-header"
-        className={cn("flex h-10 items-center justify-between rounded-lg px-3", "bg-neutral-100 dark:bg-neutral-800")}
+        className={cn(
+          "flex h-10 cursor-grab items-center justify-between rounded-lg px-3 active:cursor-grabbing",
+          "bg-neutral-100 dark:bg-neutral-800",
+        )}
+        {...attributes}
+        {...listeners}
       >
         <div className="flex items-center gap-x-2">
-          {config.color && <span data-slot="kanban-status-indicator" className="size-2.5 rounded-full" style={{ backgroundColor: config.color }} />}
+          <HtGripVerticalOutline className="size-3.5 text-gray-400" />
+          {config.color && (
+            <span data-slot="kanban-status-indicator" className="size-2.5 rounded-full" style={{ backgroundColor: resolveColor(config.color) }} />
+          )}
           <span className="text-sm font-semibold">{config.title}</span>
         </div>
         <div className="flex items-center gap-x-1">
@@ -118,7 +177,10 @@ function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onE
           {hasActions && (
             <Popover>
               <PopoverTrigger asChild>
-                <button className="grid size-6 place-items-center rounded-md text-gray-400 hover:bg-neutral-200 hover:text-gray-600 dark:hover:bg-neutral-700 dark:hover:text-gray-300">
+                <button
+                  onPointerDown={(e) => e.stopPropagation()}
+                  className="grid size-6 place-items-center rounded-md text-gray-400 hover:bg-neutral-200 hover:text-gray-600 dark:hover:bg-neutral-700 dark:hover:text-gray-300"
+                >
                   <HtMoreOutline className="size-3.5" />
                 </button>
               </PopoverTrigger>
@@ -149,14 +211,14 @@ function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onE
         </div>
       </div>
       <div
-        ref={setNodeRef}
+        ref={setDroppableRef}
         data-slot="kanban-column-body"
         className={cn("flex min-h-32 flex-col gap-y-2 rounded-lg p-1 transition-colors", isOver && "bg-primary-50/50 dark:bg-primary-950/30")}
       >
         <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
           {items.length > 0
             ? items.map((item) => (
-                <KanbanCard key={item.id} id={item.id} status={item.status}>
+                <KanbanCard key={item.id} id={item.id}>
                   {renderCard(item)}
                 </KanbanCard>
               ))
@@ -174,22 +236,42 @@ function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onE
   );
 }
 
+/**
+ * Drag-and-drop Kanban board built on @dnd-kit.
+ * Supports card dragging between columns, column reordering, and column actions.
+ *
+ * @template T - Item type extending KanbanItemBase
+ *
+ * @example
+ * ```tsx
+ * <Kanban
+ *   items={tasks}
+ *   columns={[{ id: "todo", title: "To Do" }, { id: "done", title: "Done" }]}
+ *   renderCard={(task) => <p>{task.title}</p>}
+ *   onDragEnd={({ item, toStatus }) => updateTask(item.id, toStatus)}
+ * />
+ * ```
+ */
 export function Kanban<T extends KanbanItemBase>({
   items,
   columns,
   renderCard,
   onDragEnd: onDragEndProp,
+  onColumnsReorder,
   onColumnEdit,
   onColumnDelete,
   columnEmptyState,
   className,
 }: KanbanProps<T>) {
   const [activeItem, setActiveItem] = useState<T | null>(null);
+  const [activeColumn, setActiveColumn] = useState<KanbanColumnConfig | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
+
+  const columnSortableIds = useMemo(() => columns.map((c) => `column-${c.id}`), [columns]);
 
   const itemsByStatus = useMemo(() => {
     const grouped: Record<string, T[]> = {};
@@ -197,9 +279,8 @@ export function Kanban<T extends KanbanItemBase>({
       grouped[col.id] = [];
     }
     for (const item of items) {
-      const group = grouped[item.status];
-      if (group) {
-        group.push(item);
+      if (grouped[item.status]) {
+        grouped[item.status]?.push(item);
       }
     }
     return grouped;
@@ -207,18 +288,52 @@ export function Kanban<T extends KanbanItemBase>({
 
   const handleDragStart = useCallback(
     (event: DragStartEvent) => {
-      const item = items.find((i) => i.id === event.active.id);
-      setActiveItem(item ?? null);
+      const { active } = event;
+      if (active.data.current?.type === "column") {
+        const col = columns.find((c) => c.id === active.data.current?.columnId);
+        setActiveColumn(col ?? null);
+      } else {
+        const item = items.find((i) => i.id === active.id);
+        setActiveItem(item ?? null);
+      }
     },
-    [items],
+    [items, columns],
   );
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       setActiveItem(null);
+      setActiveColumn(null);
 
       const { active, over } = event;
-      if (!over || !onDragEndProp) return;
+      if (!over) return;
+
+      // Column reorder
+      if (active.data.current?.type === "column") {
+        if (!onColumnsReorder) return;
+        const activeColId = active.data.current.columnId as string;
+
+        let targetColId: string | undefined;
+        if (over.data.current?.type === "column") {
+          targetColId = over.data.current.columnId as string;
+        } else if (columns.some((c) => c.id === over.id)) {
+          targetColId = over.id as string;
+        } else {
+          const overItem = items.find((i) => i.id === over.id);
+          targetColId = overItem?.status;
+        }
+
+        if (!targetColId || activeColId === targetColId) return;
+        const oldIndex = columns.findIndex((c) => c.id === activeColId);
+        const newIndex = columns.findIndex((c) => c.id === targetColId);
+        if (oldIndex !== -1 && newIndex !== -1) {
+          onColumnsReorder(arrayMove(columns, oldIndex, newIndex));
+        }
+        return;
+      }
+
+      // Card drag
+      if (!onDragEndProp) return;
 
       const activeId = active.id as string;
       const overId = over.id as string;
@@ -248,28 +363,48 @@ export function Kanban<T extends KanbanItemBase>({
 
       onDragEndProp({ item: draggedItem, fromStatus, toStatus, fromIndex, toIndex });
     },
-    [items, columns, itemsByStatus, onDragEndProp],
+    [items, columns, itemsByStatus, onDragEndProp, onColumnsReorder],
   );
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div data-slot="kanban" className={cn("w-full overflow-hidden", className)}>
         <div className="flex w-auto items-start gap-x-2 overflow-x-auto p-1">
-          {columns.map((column) => (
-            <KanbanColumn
-              key={column.id}
-              config={column}
-              items={itemsByStatus[column.id] ?? []}
-              renderCard={renderCard}
-              onEdit={onColumnEdit ? () => onColumnEdit(column.id) : undefined}
-              onDelete={onColumnDelete ? () => onColumnDelete(column.id) : undefined}
-              columnEmptyState={columnEmptyState}
-            />
-          ))}
+          <SortableContext items={columnSortableIds} strategy={horizontalListSortingStrategy}>
+            {columns.map((column) => (
+              <KanbanColumn
+                key={column.id}
+                config={column}
+                sortableId={`column-${column.id}`}
+                items={itemsByStatus[column.id] ?? []}
+                renderCard={renderCard}
+                onEdit={onColumnEdit ? () => onColumnEdit(column.id) : undefined}
+                onDelete={onColumnDelete ? () => onColumnDelete(column.id) : undefined}
+                columnEmptyState={columnEmptyState}
+              />
+            ))}
+          </SortableContext>
         </div>
       </div>
       <DragOverlay>
-        {activeItem ? (
+        {activeColumn ? (
+          <div data-slot="kanban-column-overlay" className="flex w-72 flex-col gap-y-2">
+            <div className={cn("flex h-10 items-center gap-x-2 rounded-lg px-3 shadow-lg", "bg-neutral-100 dark:bg-neutral-800")}>
+              <HtGripVerticalOutline className="size-3.5 text-gray-400" />
+              {activeColumn.color && <span className="size-2.5 rounded-full" style={{ backgroundColor: resolveColor(activeColumn.color) }} />}
+              <span className="text-sm font-semibold">{activeColumn.title}</span>
+              <span className={cn("ml-auto grid size-5 place-items-center rounded-full text-xs font-medium", "bg-neutral-200 dark:bg-neutral-700")}>
+                {itemsByStatus[activeColumn.id]?.length ?? 0}
+              </span>
+            </div>
+            <div
+              className={cn(
+                "min-h-24 rounded-lg border border-dashed",
+                "border-neutral-300 bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900",
+              )}
+            />
+          </div>
+        ) : activeItem ? (
           <div data-slot="kanban-card-overlay" className="rounded-lg border bg-white p-3 shadow-xl dark:border-neutral-700 dark:bg-neutral-800">
             {renderCard(activeItem)}
           </div>

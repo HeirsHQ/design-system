@@ -1,96 +1,115 @@
 # Heirs Design System
 
-A modern, accessible React component library built with TypeScript, Tailwind CSS, and Radix UI primitives.
+A modern, accessible React component library built with TypeScript, Tailwind CSS v4, and Radix UI primitives.
 
 ## Features
 
-- **Accessible** - Built on Radix UI primitives with full keyboard navigation and screen reader support
-- **Customizable** - Styled with Tailwind CSS for easy theming and customization
-- **Type-safe** - Written in TypeScript with full type definitions
-- **Tree-shakeable** - Import only what you need
-- **Modern** - ES Modules with React 18+ support
+- **Accessible** — Built on Radix UI primitives with full keyboard navigation and screen reader support
+- **Customizable** — Styled with Tailwind CSS for easy theming
+- **Type-safe** — Written in TypeScript with full type definitions
+- **Tree-shakeable** — Import only what you need
+- **Modern** — ES Modules with React 18+ support
+
+---
 
 ## Installation
 
-### Option 1: shadcn CLI (Recommended)
+### Step 1 — Configure GitHub Packages
 
-Add individual components using the shadcn CLI:
+The package is hosted on GitHub Packages. Create or update your `.npmrc` file in your project root:
+
+```
+@heirshq:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+```
+
+Your GitHub token needs the `read:packages` scope. You can create one at **GitHub → Settings → Developer settings → Personal access tokens**.
+
+### Step 2 — Install the package
 
 ```bash
-# Add a single component
-npx shadcn@latest add https://heirshq.github.io/heirs-design-system/r/button.json
-
-# Add multiple components
-npx shadcn@latest add https://heirshq.github.io/heirs-design-system/r/button.json https://heirshq.github.io/heirs-design-system/r/input.json
+npm install @heirshq/heirs-design-system
 ```
 
-Or configure as a custom registry in your project:
+### Step 3 — Import the styles
 
-```json
-// components.json
-{
-  "registries": {
-    "heirs": {
-      "url": "https://heirshq.github.io/heirs-design-system/r"
-    }
-  }
-}
-```
-
-Then add components:
-
-```bash
-npx shadcn@latest add heirs/button
-npx shadcn@latest add heirs/input
-npx shadcn@latest add heirs/select
-```
-
-### Option 2: npm Package
-
-Install the full package from GitHub Packages:
-
-```bash
-npm install @HeirsHQ/heirs-design-system
-```
-
-> **Note:** Ensure your `.npmrc` is configured to authenticate with GitHub Packages:
->
-> ```
-> @HeirsHQ:registry=https://npm.pkg.github.com
-> //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
-> ```
->
-> Your token needs the `read:packages` scope.
-
-### Peer Dependencies
-
-This library requires React 18 or higher. These should already be installed in your project:
-
-```bash
-npm install react react-dom
-```
-
-### Tailwind CSS v4 Setup
-
-This library uses Tailwind CSS v4 for styling. You must configure Tailwind to scan the package's compiled files so that the component styles are included in your CSS output.
-
-#### Option 1: CSS `@source` Directive (Recommended)
-
-In your main CSS file, add the `@source` directive to include the package:
+In your app's global CSS file (e.g. `src/index.css` or `src/globals.css`), add:
 
 ```css
 @import "tailwindcss";
+@import "@heirshq/heirs-design-system/styles";
 
-/* Include the design system package for Tailwind to scan */
-@source "@HeirsHQ/heirs-design-system";
+/* Tell Tailwind to scan the design system's compiled files */
+@source "../node_modules/@heirshq/heirs-design-system/dist";
 ```
 
-#### Option 2: Vite with `@tailwindcss/vite`
+> The `@import "@heirshq/heirs-design-system/styles"` line loads required keyframe animations (e.g. accordion open/close).
+> The `@source` directive ensures Tailwind includes the component utility classes in your CSS build.
 
-If using Vite, configure the Tailwind plugin to include the package:
+### Step 4 — (Optional) Install animation support
 
-```js
-// vite.config.js
+Several components use animation utilities from `tailwindcss-animate`. Install it if you want full animations:
+
+```bash
+npm install tailwindcss-animate
+```
+
+Then add the plugin to your CSS:
+
+```css
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+@import "@heirshq/heirs-design-system/styles";
+
+@source "../node_modules/@heirshq/heirs-design-system/dist";
+```
+
+---
+
+## Setup by Framework
+
+### Next.js (App Router)
+
+**`app/globals.css`**
+
+```css
+@import "tailwindcss";
+@import "@heirshq/heirs-design-system/styles";
+
+@source "../node_modules/@heirshq/heirs-design-system/dist";
+```
+
+**`app/layout.tsx`**
+
+```tsx
+import "./globals.css";
+```
+
+### Vite + React
+
+**`src/index.css`**
+
+```css
+@import "tailwindcss";
+@import "@heirshq/heirs-design-system/styles";
+
+@source "../node_modules/@heirshq/heirs-design-system/dist";
+```
+
+**`src/main.tsx`**
+
+```tsx
+import "./index.css";
+```
+
+Make sure you have the Tailwind Vite plugin installed:
+
+```bash
+npm install @tailwindcss/vite
+```
+
+```ts
+// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -100,66 +119,43 @@ export default defineConfig({
 });
 ```
 
-Then in your CSS file:
+### Tailwind v3 (legacy `tailwind.config.js`)
 
-```css
-@import "tailwindcss";
-@source "@HeirsHQ/heirs-design-system";
-```
-
-#### Option 3: PostCSS with `@tailwindcss/postcss`
-
-For projects using PostCSS, add to your `postcss.config.js`:
+If your project still uses Tailwind v3, add the dist path to the `content` array instead:
 
 ```js
-// postcss.config.js
-export default {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
+// tailwind.config.js
+module.exports = {
+  content: ["./src/**/*.{js,ts,jsx,tsx}", "./node_modules/@heirshq/heirs-design-system/dist/**/*.js"],
 };
 ```
 
-Then in your CSS file:
-
-```css
-@import "tailwindcss";
-@source "@HeirsHQ/heirs-design-system";
-```
-
-#### Option 4: CLI
-
-If using the Tailwind CLI directly:
-
-```bash
-npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css
-```
-
-With your CSS file containing:
-
-```css
-@import "tailwindcss";
-@source "@HeirsHQ/heirs-design-system";
-```
+---
 
 ## Usage
 
-### With shadcn CLI (components copied to your project)
-
 ```tsx
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Button, Input, Card, CardHeader, CardContent } from "@heirshq/heirs-design-system";
 
 function LoginForm() {
   return (
     <Card>
       <CardHeader>
-        <h2>Login</h2>
+        <h2 className="text-lg font-semibold">Login</h2>
       </CardHeader>
-      <CardContent>
-        <Input label="Email" type="email" placeholder="Enter your email" />
-        <Input label="Password" type="password" placeholder="Enter your password" error="Password is required" />
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="email" className="text-sm font-medium">
+            Email
+          </label>
+          <Input id="email" type="email" placeholder="Enter your email" />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="password" className="text-sm font-medium">
+            Password
+          </label>
+          <Input id="password" type="password" placeholder="Enter your password" />
+        </div>
         <Button>Sign In</Button>
       </CardContent>
     </Card>
@@ -167,81 +163,92 @@ function LoginForm() {
 }
 ```
 
-### With npm package
+### Icons
 
 ```tsx
-import { Button, Input, Card, CardHeader, CardContent } from "@HeirsHQ/heirs-design-system";
+import { HtCalendarOutline, HtCheckSolid } from "@heirshq/heirs-design-system";
 
-function LoginForm() {
-  return (
-    <Card>
-      <CardHeader>
-        <h2>Login</h2>
-      </CardHeader>
-      <CardContent>
-        <Input label="Email" type="email" placeholder="Enter your email" />
-        <Input label="Password" type="password" placeholder="Enter your password" error="Password is required" />
-        <Button>Sign In</Button>
-      </CardContent>
-    </Card>
-  );
-}
+<HtCalendarOutline className="h-5 w-5" />
+<HtCheckSolid className="h-4 w-4 text-green-600" />
 ```
+
+### Class name utility
+
+```tsx
+import { cn } from "@heirshq/heirs-design-system";
+
+const className = cn("px-4 py-2 rounded", isActive && "bg-blue-500");
+```
+
+---
 
 ## Components
 
-### Form Components
+### Form
 
-| Component    | Description                                           |
-| ------------ | ----------------------------------------------------- |
-| `Button`     | Clickable button with multiple variants and sizes     |
-| `Input`      | Text input with label, error, and helper text support |
-| `Textarea`   | Multi-line text input                                 |
-| `Label`      | Accessible form label                                 |
-| `Checkbox`   | Checkbox input with indeterminate state support       |
-| `Switch`     | Toggle switch for boolean values                      |
-| `Select`     | Dropdown select with search and multi-select support  |
-| `Radio`      | Radio button group                                    |
-| `Slider`     | Range slider input                                    |
-| `Toggle`     | Toggle button                                         |
-| `OTPInput`   | One-time password input                               |
-| `DatePicker` | Date selection component                              |
+| Component     | Description                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------------- |
+| `Button`      | Button with variants: `default`, `outline`, `secondary`, `ghost`, `destructive`, `link`, `success` |
+| `Input`       | Text input (standard HTML attributes)                                                              |
+| `Textarea`    | Multi-line text input                                                                              |
+| `Label`       | Accessible form label                                                                              |
+| `Checkbox`    | Checkbox with indeterminate state support                                                          |
+| `Switch`      | Toggle switch                                                                                      |
+| `Select`      | Dropdown select                                                                                    |
+| `RadioGroup`  | Radio button group                                                                                 |
+| `Toggle`      | Toggle button                                                                                      |
+| `OtpInput`    | One-time password input                                                                            |
+| `DatePicker`  | Single date or date range picker                                                                   |
+| `Slider`      | Range slider                                                                                       |
+| `ColorPicker` | Color selection input                                                                              |
+| `PhoneInput`  | Phone number input with country code                                                               |
+| `ArrayInput`  | Dynamic list of text inputs                                                                        |
+| `Combobox`    | Searchable dropdown                                                                                |
+| `MultiSelect` | Multi-value select                                                                                 |
 
-### Layout Components
+### Layout
 
-| Component    | Description                                         |
-| ------------ | --------------------------------------------------- |
-| `Card`       | Container with header, content, and footer sections |
-| `Separator`  | Visual divider                                      |
-| `ScrollArea` | Custom scrollable container                         |
-| `Table`      | Data table with header, body, and footer            |
-| `Tabs`       | Tabbed interface                                    |
-| `Breadcrumb` | Navigation breadcrumbs                              |
-| `Pagination` | Page navigation                                     |
+| Component              | Description                            |
+| ---------------------- | -------------------------------------- |
+| `Card`                 | Container with header, content, footer |
+| `Separator`            | Visual divider                         |
+| `ScrollArea`           | Custom scrollable container            |
+| `Table`                | Data table                             |
+| `TabPanel`             | Tabbed interface                       |
+| `Breadcrumb`           | Navigation breadcrumbs                 |
+| `Pagination`           | Page navigation                        |
+| `PageLayout`           | Full-page layout wrapper               |
+| `PagePlaceholder`      | Empty state for pages                  |
+| `DashboardPlaceholder` | Empty state for dashboard sections     |
 
-### Overlay Components
+### Overlay
 
-| Component      | Description                           |
-| -------------- | ------------------------------------- |
-| `Dialog`       | Modal dialog                          |
-| `Sheet`        | Slide-out panel                       |
-| `Popover`      | Floating content panel                |
-| `DropdownMenu` | Dropdown menu with items and submenus |
-| `Tooltip`      | Informational tooltip                 |
-| `Toast`        | Notification toast messages           |
-| `Accordion`    | Expandable content sections           |
+| Component      | Description                 |
+| -------------- | --------------------------- |
+| `Dialog`       | Modal dialog                |
+| `Sheet`        | Slide-out panel             |
+| `Popover`      | Floating content panel      |
+| `DropdownMenu` | Dropdown menu               |
+| `Tooltip`      | Informational tooltip       |
+| `Accordion`    | Expandable content sections |
+| `Command`      | Command palette             |
 
-### Data Display Components
+### Data Display
 
-| Component  | Description               |
-| ---------- | ------------------------- |
-| `Progress` | Progress bar              |
-| `Avatar`   | User avatar with fallback |
-| `Badge`    | Status badge              |
+| Component  | Description                 |
+| ---------- | --------------------------- |
+| `Progress` | Progress bar                |
+| `Avatar`   | User avatar with fallback   |
+| `Badge`    | Status badge                |
+| `Chart`    | Chart components (Recharts) |
+| `Kanban`   | Drag-and-drop kanban board  |
+| `StatCard` | Metric/stat display card    |
+| `Tree`     | Hierarchical tree view      |
+| `Skeleton` | Loading skeleton            |
+
+---
 
 ## Hooks
-
-The library includes a collection of useful React hooks:
 
 | Hook                        | Description                          |
 | --------------------------- | ------------------------------------ |
@@ -256,52 +263,33 @@ The library includes a collection of useful React hooks:
 | `useFocusTrap`              | Trap focus within an element         |
 | `useInterval`               | Set up intervals with cleanup        |
 | `useIsomorphicLayoutEffect` | Layout effect that works with SSR    |
-| `useLocalStorage`           | Persist state to localStorage        |
+| `useLocalStorage`           | Persist state in localStorage        |
 | `useMediaQuery`             | Respond to media queries             |
 | `useMockApiCall`            | Simulate API calls for testing       |
 | `useMounted`                | Check if component is mounted        |
-| `usePrevious`               | Get previous value of a variable     |
-| `usePrint`                  | Print functionality                  |
+| `usePrevious`               | Get the previous value of a variable |
 | `useScrollLock`             | Lock body scroll                     |
 | `useToggle`                 | Toggle boolean state                 |
 | `useWindowSize`             | Track window dimensions              |
 
-## Icons
+---
 
-The library includes `Outline` and `Solid` variants of icons:
+## Peer Dependencies
 
-| Icon                                            | Usage               |
-| ----------------------------------------------- | ------------------- |
-| `HtAddOutline` / `HtAddSolid`                   | Add/plus icon       |
-| `HtCalendarOutline` / `HtCalendarSolid`         | Calendar icon       |
-| `HtCheckOutline` / `HtCheckSolid`               | Checkmark icon      |
-| `HtChevronDownOutline` / `HtChevronDownSolid`   | Chevron down        |
-| `HtChevronRightOutline` / `HtChevronRightSolid` | Chevron right       |
-| `HtChevronUpOutline` / `HtChevronUpSolid`       | Chevron up          |
-| `HtEyeOutline` / `HtEyeSolid`                   | Eye (show) icon     |
-| `HtEyeOffOutline` / `HtEyeOffSolid`             | Eye off (hide) icon |
-| `HtLockOutline` / `HtLockSolid`                 | Lock icon           |
-| `HtMailOutline` / `HtMailSolid`                 | Mail/email icon     |
-| `HtMinusOutline` / `HtMinusSolid`               | Minus icon          |
-| `HtSearchOutline` / `HtSearchSolid`             | Search icon         |
+| Package               | Required | Notes                                                             |
+| --------------------- | -------- | ----------------------------------------------------------------- |
+| `react` ≥ 18          | Yes      |                                                                   |
+| `react-dom` ≥ 18      | Yes      |                                                                   |
+| `tailwindcss` ≥ 4     | Yes      |                                                                   |
+| `tailwindcss-animate` | No       | Required for dialog, sheet, tooltip, and other overlay animations |
+| `recharts` ≥ 3        | No       | Required only if using `Chart` components                         |
+| `cmdk` ≥ 1            | No       | Required only if using `Command`                                  |
+| `sonner` ≥ 2          | No       | Required only if using `Toast`                                    |
+| `react-hook-form` ≥ 7 | No       | Required only if using `Form` / `FieldRenderer`                   |
+| `zod` ≥ 3             | No       | Required only if using `Form` with Zod schemas                    |
+| `@base-ui/react` ≥ 1  | No       | Required only if using `Calendar`                                 |
 
-```tsx
-import { HtCalendarOutline, HtCheckSolid } from "@HeirsHQ/heirs-design-system";
-
-<HtCalendarOutline className="h-5 w-5" />;
-```
-
-## Utilities
-
-### `cn()` - Class Name Utility
-
-Merge Tailwind CSS classes with proper precedence:
-
-```tsx
-import { cn } from "@HeirsHQ/heirs-design-system";
-
-const className = cn("px-4 py-2 rounded", isActive && "bg-blue-500", className);
-```
+---
 
 ## Development
 
@@ -309,79 +297,56 @@ const className = cn("px-4 py-2 rounded", isActive && "bg-blue-500", className);
 # Install dependencies
 npm install
 
+# Run Storybook (component explorer)
+npm run storybook
+
 # Type check
 npm run typecheck
-
-# Build package
-npm run build
-
-# Build shadcn registry
-npm run build:registry
 
 # Lint
 npm run lint
 
 # Format code
 npm run prettier:write
+
+# Build package
+npm run build
 ```
 
-## Requirements
+---
 
-- React 18.0.0 or higher
-- React DOM 18.0.0 or higher
-- Tailwind CSS v4 (for styling)
+## Publishing
 
-## Browser Support
+### Automatic (Recommended)
 
-This library supports all modern browsers:
+1. Create a GitHub Release with a version tag (e.g. `v1.0.1`)
+2. The publish workflow runs automatically and publishes to GitHub Packages
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## CI/CD
-
-This project uses GitHub Actions for continuous integration and deployment.
-
-### Automated Workflows
-
-| Workflow     | Trigger                   | Description                                        |
-| ------------ | ------------------------- | -------------------------------------------------- |
-| **CI**       | Push to `main`, PRs       | Runs typecheck, lint, formatting check, and build  |
-| **Publish**  | Release published, Manual | Publishes package to GitHub Packages               |
-| **Registry** | Push to `main`, Manual    | Builds and deploys shadcn registry to GitHub Pages |
-
-### Publishing
-
-#### Automatic (Recommended)
-
-1. Create a GitHub Release with a version tag (e.g., `v1.0.1`)
-2. The publish workflow will automatically run and publish to GitHub Packages
-
-Or trigger manually:
-
-1. Go to Actions → Publish Package → Run workflow
-2. Select version bump type (patch/minor/major)
-
-#### Manual
+### Manual
 
 ```bash
-# Update version
-npm version patch  # or minor, or major
+# Bump version
+npm version patch   # or minor / major
 
 # Build and publish
 npm publish
 ```
 
-### Required Secrets
+No secrets required — the workflow uses `GITHUB_TOKEN` with `packages: write` permission.
 
-No additional secrets required. The workflow uses `GITHUB_TOKEN` which is automatically provided by GitHub Actions with `packages: write` permission.
+---
 
-## Contributing
+## Requirements
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on contributing to this package.
+- React 18+ and React DOM 18+
+- Tailwind CSS v4
+
+## Browser Support
+
+Chrome, Firefox, Safari, and Edge (latest versions).
+
+---
 
 ## License
 
-This is proprietary software owned by Heirs Technologies. For internal use only. See [LICENSE](./LICENSE) for details.
+Proprietary software owned by Heirs Technologies. For internal use only. See [LICENSE](./LICENSE) for details.
