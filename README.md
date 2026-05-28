@@ -12,10 +12,10 @@ The package is hosted on GitHub Packages. Create or update your `.npmrc` file in
 
 ```
 @heirshq:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
 ```
 
-Your GitHub token needs the `read:packages` scope. You can create one at **GitHub → Settings → Developer settings → Personal access tokens**.
+Then set `NPM_TOKEN` in your environment to a GitHub token with the `read:packages` scope. You can create one at **GitHub → Settings → Developer settings → Personal access tokens**.
 
 ### Step 2 — Install the package
 
