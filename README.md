@@ -2,14 +2,6 @@
 
 A modern, accessible React component library built with TypeScript, Tailwind CSS v4, and Radix UI primitives.
 
-## Features
-
-- **Accessible** — Built on Radix UI primitives with full keyboard navigation and screen reader support
-- **Customizable** — Styled with Tailwind CSS for easy theming
-- **Type-safe** — Written in TypeScript with full type definitions
-- **Tree-shakeable** — Import only what you need
-- **Modern** — ES Modules with React 18+ support
-
 ---
 
 ## Installation
@@ -132,6 +124,23 @@ module.exports = {
 
 ---
 
+## Peer Dependencies
+
+| Package               | Required | Notes                                                             |
+| --------------------- | -------- | ----------------------------------------------------------------- |
+| `react` ≥ 18          | Yes      |                                                                   |
+| `react-dom` ≥ 18      | Yes      |                                                                   |
+| `tailwindcss` ≥ 4     | Yes      |                                                                   |
+| `tailwindcss-animate` | No       | Required for dialog, sheet, tooltip, and other overlay animations |
+| `recharts` ≥ 3        | No       | Required only if using `Chart` components                         |
+| `cmdk` ≥ 1            | No       | Required only if using `Command`                                  |
+| `sonner` ≥ 2          | No       | Required only if using `Toast`                                    |
+| `react-hook-form` ≥ 7 | No       | Required only if using `Form` / `FieldRenderer`                   |
+| `zod` ≥ 3             | No       | Required only if using `Form` with Zod schemas                    |
+| `@base-ui/react` ≥ 1  | No       | Required only if using `Calendar`                                 |
+
+---
+
 ## Usage
 
 ```tsx
@@ -179,174 +188,3 @@ import { cn } from "@heirshq/heirs-design-system";
 
 const className = cn("px-4 py-2 rounded", isActive && "bg-blue-500");
 ```
-
----
-
-## Components
-
-### Form
-
-| Component     | Description                                                                                        |
-| ------------- | -------------------------------------------------------------------------------------------------- |
-| `Button`      | Button with variants: `default`, `outline`, `secondary`, `ghost`, `destructive`, `link`, `success` |
-| `Input`       | Text input (standard HTML attributes)                                                              |
-| `Textarea`    | Multi-line text input                                                                              |
-| `Label`       | Accessible form label                                                                              |
-| `Checkbox`    | Checkbox with indeterminate state support                                                          |
-| `Switch`      | Toggle switch                                                                                      |
-| `Select`      | Dropdown select                                                                                    |
-| `RadioGroup`  | Radio button group                                                                                 |
-| `Toggle`      | Toggle button                                                                                      |
-| `OtpInput`    | One-time password input                                                                            |
-| `DatePicker`  | Single date or date range picker                                                                   |
-| `Slider`      | Range slider                                                                                       |
-| `ColorPicker` | Color selection input                                                                              |
-| `PhoneInput`  | Phone number input with country code                                                               |
-| `ArrayInput`  | Dynamic list of text inputs                                                                        |
-| `Combobox`    | Searchable dropdown                                                                                |
-| `MultiSelect` | Multi-value select                                                                                 |
-
-### Layout
-
-| Component              | Description                            |
-| ---------------------- | -------------------------------------- |
-| `Card`                 | Container with header, content, footer |
-| `Separator`            | Visual divider                         |
-| `ScrollArea`           | Custom scrollable container            |
-| `Table`                | Data table                             |
-| `TabPanel`             | Tabbed interface                       |
-| `Breadcrumb`           | Navigation breadcrumbs                 |
-| `Pagination`           | Page navigation                        |
-| `PageLayout`           | Full-page layout wrapper               |
-| `PagePlaceholder`      | Empty state for pages                  |
-| `DashboardPlaceholder` | Empty state for dashboard sections     |
-
-### Overlay
-
-| Component      | Description                 |
-| -------------- | --------------------------- |
-| `Dialog`       | Modal dialog                |
-| `Sheet`        | Slide-out panel             |
-| `Popover`      | Floating content panel      |
-| `DropdownMenu` | Dropdown menu               |
-| `Tooltip`      | Informational tooltip       |
-| `Accordion`    | Expandable content sections |
-| `Command`      | Command palette             |
-
-### Data Display
-
-| Component  | Description                 |
-| ---------- | --------------------------- |
-| `Progress` | Progress bar                |
-| `Avatar`   | User avatar with fallback   |
-| `Badge`    | Status badge                |
-| `Chart`    | Chart components (Recharts) |
-| `Kanban`   | Drag-and-drop kanban board  |
-| `StatCard` | Metric/stat display card    |
-| `Tree`     | Hierarchical tree view      |
-| `Skeleton` | Loading skeleton            |
-
----
-
-## Hooks
-
-| Hook                        | Description                          |
-| --------------------------- | ------------------------------------ |
-| `useClickOutside`           | Detect clicks outside an element     |
-| `useControllableState`      | Manage controlled/uncontrolled state |
-| `useCopyToClipboard`        | Copy text to clipboard               |
-| `useDebounce`               | Debounce a value                     |
-| `useDisclosure`             | Manage open/close state              |
-| `useDraggableComponent`     | Make elements draggable              |
-| `useEventListener`          | Add event listeners with cleanup     |
-| `useFileHandler`            | Handle file uploads                  |
-| `useFocusTrap`              | Trap focus within an element         |
-| `useInterval`               | Set up intervals with cleanup        |
-| `useIsomorphicLayoutEffect` | Layout effect that works with SSR    |
-| `useLocalStorage`           | Persist state in localStorage        |
-| `useMediaQuery`             | Respond to media queries             |
-| `useMockApiCall`            | Simulate API calls for testing       |
-| `useMounted`                | Check if component is mounted        |
-| `usePrevious`               | Get the previous value of a variable |
-| `useScrollLock`             | Lock body scroll                     |
-| `useToggle`                 | Toggle boolean state                 |
-| `useWindowSize`             | Track window dimensions              |
-
----
-
-## Peer Dependencies
-
-| Package               | Required | Notes                                                             |
-| --------------------- | -------- | ----------------------------------------------------------------- |
-| `react` ≥ 18          | Yes      |                                                                   |
-| `react-dom` ≥ 18      | Yes      |                                                                   |
-| `tailwindcss` ≥ 4     | Yes      |                                                                   |
-| `tailwindcss-animate` | No       | Required for dialog, sheet, tooltip, and other overlay animations |
-| `recharts` ≥ 3        | No       | Required only if using `Chart` components                         |
-| `cmdk` ≥ 1            | No       | Required only if using `Command`                                  |
-| `sonner` ≥ 2          | No       | Required only if using `Toast`                                    |
-| `react-hook-form` ≥ 7 | No       | Required only if using `Form` / `FieldRenderer`                   |
-| `zod` ≥ 3             | No       | Required only if using `Form` with Zod schemas                    |
-| `@base-ui/react` ≥ 1  | No       | Required only if using `Calendar`                                 |
-
----
-
-## Development
-
-```bash
-# Install dependencies
-npm install
-
-# Run Storybook (component explorer)
-npm run storybook
-
-# Type check
-npm run typecheck
-
-# Lint
-npm run lint
-
-# Format code
-npm run prettier:write
-
-# Build package
-npm run build
-```
-
----
-
-## Publishing
-
-### Automatic (Recommended)
-
-1. Create a GitHub Release with a version tag (e.g. `v1.0.1`)
-2. The publish workflow runs automatically and publishes to GitHub Packages
-
-### Manual
-
-```bash
-# Bump version
-npm version patch   # or minor / major
-
-# Build and publish
-npm publish
-```
-
-No secrets required — the workflow uses `GITHUB_TOKEN` with `packages: write` permission.
-
----
-
-## Requirements
-
-- React 18+ and React DOM 18+
-- Tailwind CSS v4
-
-## Browser Support
-
-Chrome, Firefox, Safari, and Edge (latest versions).
-
----
-
-## License
-
-Proprietary software owned by Heirs Technologies. For internal use only. See [LICENSE](./LICENSE) for details.
