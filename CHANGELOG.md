@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- README trimmed to installation and usage documentation only
+- `.npmrc` auth token now uses `${NPM_TOKEN}` environment variable instead of a hardcoded placeholder, making the file safe to commit
+
+---
+
 ## [1.0.0] - 2024
 
 ### Added
