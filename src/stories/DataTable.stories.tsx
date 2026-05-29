@@ -47,12 +47,8 @@ const baseColumns: ColumnDef<User>[] = [
 
 const selectionColumn: ColumnDef<User> = {
   id: "select",
-  header: ({ table }) => (
-    <Checkbox checked={table.getIsAllPageRowsSelected()} onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)} />
-  ),
-  cell: ({ row }) => (
-    <Checkbox checked={row.getIsSelected()} onCheckedChange={(v) => row.toggleSelected(!!v)} onClick={(e) => e.stopPropagation()} />
-  ),
+  header: ({ table }) => <Checkbox checked={table.getIsAllPageRowsSelected()} onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)} />,
+  cell: ({ row }) => <Checkbox checked={row.getIsSelected()} onCheckedChange={(v) => row.toggleSelected(!!v)} onClick={(e) => e.stopPropagation()} />,
 };
 
 const meta: Meta<typeof DataTable> = {
@@ -189,14 +185,7 @@ export const WithBulkActions: Story = {
 };
 
 export const Loading: Story = {
-  render: () => (
-    <DataTable
-      columns={baseColumns}
-      data={[]}
-      isLoading
-      toolbar={{ search: { placeholder: "Search users..." } }}
-    />
-  ),
+  render: () => <DataTable columns={baseColumns} data={[]} isLoading toolbar={{ search: { placeholder: "Search users..." } }} />,
 };
 
 export const Empty: Story = {

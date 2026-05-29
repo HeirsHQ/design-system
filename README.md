@@ -17,7 +17,7 @@ The package is hosted on GitHub Packages. Create or update your `.npmrc` file in
 
 Then set `NPM_TOKEN` in your environment to a GitHub token with the `read:packages` scope. You can create one at **GitHub → Settings → Developer settings → Personal access tokens**.
 
-> **Important:** The token must be set as an environment variable in your shell *before* running the install command, otherwise the package manager will ignore the `.npmrc` auth config and fall back to the public npm registry (resulting in a 404).
+> **Important:** The token must be set as an environment variable in your shell _before_ running the install command, otherwise the package manager will ignore the `.npmrc` auth config and fall back to the public npm registry (resulting in a 404).
 >
 > ```bash
 > # bash / zsh
@@ -95,6 +95,7 @@ Then add the plugin to your CSS:
 As an alternative to the NPM package, you can add individual components directly into your project using the shadcn CLI. This copies the component source files into your codebase so you own and can customise them freely — no package import needed.
 
 > **When to use which approach**
+>
 > - **NPM package** — you want to stay in sync with updates and treat the design system as a black box
 > - **shadcn registry** — you want to own the source and customise components per project
 
@@ -140,39 +141,39 @@ npx shadcn add https://heirshq.github.io/design-system/r/button.json
 
 ### Available components
 
-| Name              | Type      |
-| ----------------- | --------- |
-| `utils`           | lib       |
-| `icons`           | lib       |
-| `button`          | component |
-| `input`           | component |
-| `textarea`        | component |
-| `label`           | component |
-| `checkbox`        | component |
-| `switch`          | component |
-| `select`          | component |
-| `radio`           | component |
-| `slider`          | component |
-| `toggle`          | component |
-| `otp-input`       | component |
-| `date-picker`     | component |
-| `card`            | component |
-| `separator`       | component |
-| `scroll-area`     | component |
-| `table`           | component |
-| `tabs`            | component |
-| `breadcrumb`      | component |
-| `pagination`      | component |
-| `dialog`          | component |
-| `sheet`           | component |
-| `popover`         | component |
-| `dropdown-menu`   | component |
-| `tooltip`         | component |
-| `toast`           | component |
-| `progress`        | component |
-| `accordion`       | component |
-| `avatar`          | component |
-| `badge`           | component |
+| Name            | Type      |
+| --------------- | --------- |
+| `utils`         | lib       |
+| `icons`         | lib       |
+| `button`        | component |
+| `input`         | component |
+| `textarea`      | component |
+| `label`         | component |
+| `checkbox`      | component |
+| `switch`        | component |
+| `select`        | component |
+| `radio`         | component |
+| `slider`        | component |
+| `toggle`        | component |
+| `otp-input`     | component |
+| `date-picker`   | component |
+| `card`          | component |
+| `separator`     | component |
+| `scroll-area`   | component |
+| `table`         | component |
+| `tabs`          | component |
+| `breadcrumb`    | component |
+| `pagination`    | component |
+| `dialog`        | component |
+| `sheet`         | component |
+| `popover`       | component |
+| `dropdown-menu` | component |
+| `tooltip`       | component |
+| `toast`         | component |
+| `progress`      | component |
+| `accordion`     | component |
+| `avatar`        | component |
+| `badge`         | component |
 
 The full registry index is available at `https://heirshq.github.io/design-system/r/index.json`.
 

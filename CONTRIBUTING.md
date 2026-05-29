@@ -38,17 +38,17 @@ Thank you for your interest in contributing to the Heirs Design System. This doc
 
 ### Available Scripts
 
-| Command                       | Description                                   |
-| ----------------------------- | --------------------------------------------- |
-| `npm run build`               | Compile TypeScript to JavaScript              |
-| `npm run build:registry`      | Build the component registry                  |
-| `npm run typecheck`           | Run TypeScript type checking without emitting |
-| `npm run lint`                | Run ESLint on source files                    |
-| `npm run prettier:write`      | Format source files with Prettier             |
-| `npm run prettier:write-all`  | Format all files in the project               |
-| `npm run prettier:check`      | Check if files are formatted correctly        |
-| `npm run storybook`           | Start Storybook dev server on port 6006       |
-| `npm run build-storybook`     | Build Storybook for static deployment         |
+| Command                      | Description                                   |
+| ---------------------------- | --------------------------------------------- |
+| `npm run build`              | Compile TypeScript to JavaScript              |
+| `npm run build:registry`     | Build the component registry                  |
+| `npm run typecheck`          | Run TypeScript type checking without emitting |
+| `npm run lint`               | Run ESLint on source files                    |
+| `npm run prettier:write`     | Format source files with Prettier             |
+| `npm run prettier:write-all` | Format all files in the project               |
+| `npm run prettier:check`     | Check if files are formatted correctly        |
+| `npm run storybook`          | Start Storybook dev server on port 6006       |
+| `npm run build-storybook`    | Build Storybook for static deployment         |
 
 ## Project Structure
 
