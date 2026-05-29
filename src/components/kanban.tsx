@@ -1,5 +1,3 @@
-"use client";
-
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import {

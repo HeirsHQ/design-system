@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 
 import { HtChevronRightOutline, HtHomeOutline } from "../icons/index.js";

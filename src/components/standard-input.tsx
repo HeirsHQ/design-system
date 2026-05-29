@@ -1,5 +1,3 @@
-"use client";
-
 import type { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import { Controller } from "react-hook-form";
 // import * as React from "react";

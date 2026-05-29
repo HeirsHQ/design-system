@@ -12,6 +12,7 @@ export * from "./command.js";
 export * from "./calendar.js";
 export * from "./color-picker.js";
 export * from "./dashboard-placeholder.js";
+export * from "./data-table.js";
 export * from "./date-picker.js";
 export * from "./dialog.js";
 export * from "./dropdown-menu.js";

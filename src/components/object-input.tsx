@@ -1,5 +1,3 @@
-"use client";
-
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
 import { colSpanClass, resolveDisabled } from "../lib/form.js";

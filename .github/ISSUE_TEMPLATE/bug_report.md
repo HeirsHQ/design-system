@@ -14,9 +14,9 @@ labels: bug
 
 ## Steps to reproduce
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Minimal reproduction
 
@@ -28,13 +28,13 @@ labels: bug
 
 ## Environment
 
-| | |
-|---|---|
-| Package version | <!-- e.g. 1.0.0 --> |
-| React version | |
-| Tailwind version | |
-| Framework | <!-- Next.js, Vite, etc. --> |
-| Browser / Node | |
+|                  |                              |
+| ---------------- | ---------------------------- |
+| Package version  | <!-- e.g. 1.0.0 -->          |
+| React version    |                              |
+| Tailwind version |                              |
+| Framework        | <!-- Next.js, Vite, etc. --> |
+| Browser / Node   |                              |
 
 ## Additional context
 

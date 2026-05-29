@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
