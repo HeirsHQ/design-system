@@ -44,6 +44,7 @@ jobs:
         run: npm run build-storybook -- --output-dir public/storybook
         env:
           STORYBOOK_DISABLE_TELEMETRY: 1
+          STORYBOOK_BASE_PATH: /design-system/storybook/
 
       - name: Verify Storybook output
         run: |
