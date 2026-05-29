@@ -179,6 +179,104 @@ The full registry index is available at `https://heirshq.github.io/design-system
 
 ---
 
+## MFE Scaffolder
+
+The package ships a `create-mfe` CLI that scaffolds a new Converge micro-frontend workspace — no local install required.
+
+### Prerequisites
+
+Because the package is hosted on GitHub Packages, your shell must have a valid PAT exported **before** running `dlx` — otherwise the package manager cannot resolve `@heirshq/design-system` and the command will fail.
+
+**1. Create a PAT** at GitHub → Settings → Developer settings → Personal access tokens with the `read:packages` scope.
+
+**2. Export it in your shell:**
+
+```bash
+# bash / zsh
+export NPM_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
+```
+
+```powershell
+# PowerShell
+$env:NPM_TOKEN = "ghp_xxxxxxxxxxxxxxxxxxxx"
+```
+
+**3. Ensure your `.npmrc` maps the scope to GitHub Packages:**
+
+```
+@heirshq:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+```
+
+### Usage
+
+```bash
+# pnpm (recommended)
+pnpm dlx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
+
+# npm
+npx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
+```
+
+### Options
+
+| Flag       | Required | Description                                                        |
+| ---------- | -------- | ------------------------------------------------------------------ |
+| `--name`   | Yes      | Full module name — must match `converge-{slug}-mfe`                |
+| `--port`   | Yes      | Dev server port (1025–65535)                                       |
+| `--routes` | No       | Comma-separated page route slugs (default: `overview`)             |
+
+```bash
+# Scaffold with multiple routes
+pnpm dlx @heirshq/design-system create-mfe \
+  --name converge-recruitment-mfe \
+  --port 4009 \
+  --routes jobs,candidates,pipelines
+```
+
+### What gets generated
+
+Running the command creates a self-contained Nx workspace at `./<name>/` with the following structure:
+
+```
+converge-recruitment-mfe/
+├── package.json
+├── nx.json
+├── tsconfig.base.json
+├── tsconfig.json
+└── converge-recruitment-mfe/
+    ├── components.json
+    ├── project.json
+    ├── module-federation.config.ts
+    ├── rspack.config.ts
+    ├── postcss.config.mjs
+    ├── tsconfig.json
+    ├── tsconfig.app.json
+    └── src/
+        ├── main.ts
+        ├── bootstrap.tsx
+        ├── remote-entry.ts
+        ├── index.html
+        ├── styles.css
+        ├── routes.ts
+        ├── app/app.tsx
+        ├── lib/         (client.ts, query.ts, utils.ts)
+        ├── types/       (app.ts, query.ts)
+        └── pages/       (one file per --routes slug)
+```
+
+The scaffolder also prints the exact steps to wire the new remote into `converge-shell-mfe` (remotes config, module federation, type declarations, and app routing).
+
+### After scaffolding
+
+```bash
+cd converge-recruitment-mfe
+pnpm install
+pnpm dev
+```
+
+---
+
 ## Setup by Framework
 
 ### Next.js (App Router)
