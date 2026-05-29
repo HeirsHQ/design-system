@@ -14,10 +14,10 @@ npm install @heirshq/design-system
 
 The package ships two CSS exports that work together.
 
-| Import | Purpose |
-|---|---|
-| `@heirshq/design-system/styles` | Required. Registers the `@source` path so Tailwind v4 includes component utility classes, and defines animation keyframes (Accordion, etc.). |
-| `@heirshq/design-system/theme` | Optional but recommended. Provides default `@theme` token mappings and `:root` / `.dark` CSS variables so you only need to write the values you want to change. |
+| Import                          | Purpose                                                                                                                                                         |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@heirshq/design-system/styles` | Required. Registers the `@source` path so Tailwind v4 includes component utility classes, and defines animation keyframes (Accordion, etc.).                    |
+| `@heirshq/design-system/theme`  | Optional but recommended. Provides default `@theme` token mappings and `:root` / `.dark` CSS variables so you only need to write the values you want to change. |
 
 ### Minimal setup (Tailwind v4)
 
@@ -47,7 +47,7 @@ no duplication required.
 @import "tailwindcss";
 
 @theme {
-  --color-primary-50:  #fef2f2;
+  --color-primary-50: #fef2f2;
   --color-primary-100: #fee2e2;
   --color-primary-200: #fecaca;
   --color-primary-300: #fca5a5;
@@ -85,51 +85,51 @@ All tokens provided by `@heirshq/design-system/theme`:
 
 #### `@theme` mappings
 
-| Token | Maps to |
-|---|---|
-| `--color-primary-{50–950}` | Heirs brand red scale (override to change brand color) |
-| `--color-background` | `var(--background)` |
-| `--color-foreground` | `var(--foreground)` |
-| `--color-layout-background` | `var(--layout-background)` |
-| `--color-card` / `--color-card-foreground` | `var(--card)` / `var(--card-foreground)` |
-| `--color-popover` / `--color-popover-foreground` | `var(--popover)` / `var(--popover-foreground)` |
-| `--color-primary` / `--color-primary-foreground` | `var(--primary)` / `var(--primary-foreground)` |
-| `--color-secondary` / `--color-secondary-foreground` | `var(--secondary)` / `var(--secondary-foreground)` |
-| `--color-muted` / `--color-muted-foreground` | `var(--muted)` / `var(--muted-foreground)` |
-| `--color-accent` / `--color-accent-foreground` | `var(--accent)` / `var(--accent-foreground)` |
-| `--color-destructive` | `var(--destructive)` |
-| `--color-border` | `var(--border)` |
-| `--color-input` | `var(--input)` |
-| `--color-ring` | `var(--ring)` |
-| `--color-chart-{1–5}` | `var(--chart-{1–5})` |
-| `--color-sidebar-*` | `var(--sidebar-*)` |
-| `--radius-{sm,md,lg,xl,2xl,3xl,4xl}` | Calculated from `var(--radius)` |
+| Token                                                | Maps to                                                |
+| ---------------------------------------------------- | ------------------------------------------------------ |
+| `--color-primary-{50–950}`                           | Heirs brand red scale (override to change brand color) |
+| `--color-background`                                 | `var(--background)`                                    |
+| `--color-foreground`                                 | `var(--foreground)`                                    |
+| `--color-layout-background`                          | `var(--layout-background)`                             |
+| `--color-card` / `--color-card-foreground`           | `var(--card)` / `var(--card-foreground)`               |
+| `--color-popover` / `--color-popover-foreground`     | `var(--popover)` / `var(--popover-foreground)`         |
+| `--color-primary` / `--color-primary-foreground`     | `var(--primary)` / `var(--primary-foreground)`         |
+| `--color-secondary` / `--color-secondary-foreground` | `var(--secondary)` / `var(--secondary-foreground)`     |
+| `--color-muted` / `--color-muted-foreground`         | `var(--muted)` / `var(--muted-foreground)`             |
+| `--color-accent` / `--color-accent-foreground`       | `var(--accent)` / `var(--accent-foreground)`           |
+| `--color-destructive`                                | `var(--destructive)`                                   |
+| `--color-border`                                     | `var(--border)`                                        |
+| `--color-input`                                      | `var(--input)`                                         |
+| `--color-ring`                                       | `var(--ring)`                                          |
+| `--color-chart-{1–5}`                                | `var(--chart-{1–5})`                                   |
+| `--color-sidebar-*`                                  | `var(--sidebar-*)`                                     |
+| `--radius-{sm,md,lg,xl,2xl,3xl,4xl}`                 | Calculated from `var(--radius)`                        |
 
 #### `:root` defaults (light)
 
-| Variable | Default |
-|---|---|
-| `--background` | `oklch(1 0 0)` |
-| `--foreground` | `oklch(0.145 0 0)` |
-| `--layout-background` | `#fafafa` |
-| `--primary` | `oklch(0.205 0 0)` |
-| `--primary-foreground` | `oklch(0.985 0 0)` |
-| `--muted` | `oklch(0.97 0 0)` |
-| `--muted-foreground` | `oklch(0.556 0 0)` |
-| `--destructive` | `oklch(0.577 0.245 27.325)` |
-| `--border` | `oklch(0.922 0 0)` |
-| `--radius` | `0.625rem` |
+| Variable               | Default                     |
+| ---------------------- | --------------------------- |
+| `--background`         | `oklch(1 0 0)`              |
+| `--foreground`         | `oklch(0.145 0 0)`          |
+| `--layout-background`  | `#fafafa`                   |
+| `--primary`            | `oklch(0.205 0 0)`          |
+| `--primary-foreground` | `oklch(0.985 0 0)`          |
+| `--muted`              | `oklch(0.97 0 0)`           |
+| `--muted-foreground`   | `oklch(0.556 0 0)`          |
+| `--destructive`        | `oklch(0.577 0.245 27.325)` |
+| `--border`             | `oklch(0.922 0 0)`          |
+| `--radius`             | `0.625rem`                  |
 
 #### `.dark` defaults
 
-| Variable | Default |
-|---|---|
-| `--background` | `oklch(0.145 0 0)` |
-| `--foreground` | `oklch(0.985 0 0)` |
-| `--primary` | `oklch(0.922 0 0)` |
-| `--muted` | `oklch(0.269 0 0)` |
+| Variable        | Default                     |
+| --------------- | --------------------------- |
+| `--background`  | `oklch(0.145 0 0)`          |
+| `--foreground`  | `oklch(0.985 0 0)`          |
+| `--primary`     | `oklch(0.922 0 0)`          |
+| `--muted`       | `oklch(0.269 0 0)`          |
 | `--destructive` | `oklch(0.704 0.191 22.216)` |
-| `--border` | `oklch(1 0 0 / 10%)` |
+| `--border`      | `oklch(1 0 0 / 10%)`        |
 
 ---
 
@@ -144,9 +144,6 @@ If you use Tailwind v3, add the content path in `tailwind.config.js` instead:
 ```js
 // tailwind.config.js
 module.exports = {
-  content: [
-    "./src/**/*.{ts,tsx}",
-    "./node_modules/@heirshq/design-system/dist/**/*.js",
-  ],
+  content: ["./src/**/*.{ts,tsx}", "./node_modules/@heirshq/design-system/dist/**/*.js"],
 };
 ```
