@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "heirs-design-system",
-  "homepage": "https://heirshq.github.io/heirs-design-system",
+  "homepage": "https://heirshq.github.io/design-system",
   "items": [
     {
       "name": "utils",

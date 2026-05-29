@@ -110,13 +110,19 @@ async function buildRegistry() {
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f9fafb; color: #111827; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 2.5rem; max-width: 560px; width: 100%; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 2.5rem; max-width: 580px; width: 100%; }
     .badge { display: inline-block; background: #fef2f2; color: #991b1b; font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.75rem; border-radius: 999px; margin-bottom: 1.25rem; }
     h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
     .subtitle { color: #6b7280; font-size: 0.95rem; margin-bottom: 2rem; }
     .stat { font-size: 0.875rem; color: #374151; margin-bottom: 1.75rem; }
     .stat strong { color: #111827; }
     h2 { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; margin-bottom: 0.6rem; }
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid #e5e7eb; margin-bottom: 0; }
+    .tab { padding: 0.4rem 0.85rem; font-size: 0.8rem; font-weight: 500; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; border-top: none; border-left: none; border-right: none; }
+    .tab.active { color: #111827; border-bottom-color: #111827; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .code-wrap { background: #f3f4f6; border-radius: 0 8px 8px 8px; padding: 0.875rem 1rem; font-family: "Menlo", "Monaco", monospace; font-size: 0.82rem; color: #1f2937; word-break: break-all; margin-bottom: 1.5rem; }
     .code-block { background: #f3f4f6; border-radius: 8px; padding: 0.875rem 1rem; font-family: "Menlo", "Monaco", monospace; font-size: 0.82rem; color: #1f2937; word-break: break-all; margin-bottom: 1.5rem; }
     .links { display: flex; gap: 1rem; flex-wrap: wrap; }
     .links a { font-size: 0.85rem; color: #2563eb; text-decoration: none; }
@@ -129,15 +135,35 @@ async function buildRegistry() {
     <h1>Heirs Design System</h1>
     <p class="subtitle">A component registry for internal use at Heirs Technologies.</p>
     <p class="stat"><strong>${componentCount}</strong> components available</p>
+
     <h2>Add a component</h2>
-    <div class="code-block">npx shadcn add ${REGISTRY_URL}/r/[component-name]</div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab(event, 'npx')">npx</button>
+      <button class="tab" onclick="switchTab(event, 'pnpm')">pnpm</button>
+      <button class="tab" onclick="switchTab(event, 'yarn')">yarn</button>
+      <button class="tab" onclick="switchTab(event, 'bun')">bun</button>
+    </div>
+    <div id="npx" class="tab-panel active"><div class="code-wrap">npx shadcn add ${REGISTRY_URL}/r/[component-name]</div></div>
+    <div id="pnpm" class="tab-panel"><div class="code-wrap">pnpm dlx shadcn add ${REGISTRY_URL}/r/[component-name]</div></div>
+    <div id="yarn" class="tab-panel"><div class="code-wrap">yarn dlx shadcn add ${REGISTRY_URL}/r/[component-name]</div></div>
+    <div id="bun" class="tab-panel"><div class="code-wrap">bunx shadcn add ${REGISTRY_URL}/r/[component-name]</div></div>
+
     <h2>Registry index</h2>
     <div class="code-block">${REGISTRY_URL}/r/index.json</div>
     <div class="links">
+      <a href="${REGISTRY_URL}/storybook/">Storybook →</a>
       <a href="${REGISTRY_URL}/r/index.json">Browse registry →</a>
       <a href="https://github.com/HeirsHQ/heirs-design-system">GitHub →</a>
     </div>
   </div>
+  <script>
+    function switchTab(e, id) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      e.target.classList.add('active');
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
 </body>
 </html>`;
 

@@ -37,6 +37,9 @@ jobs:
       - name: Build registry
         run: npm run build:registry
 
+      - name: Build Storybook
+        run: npm run build-storybook -- --output-dir public/storybook
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
