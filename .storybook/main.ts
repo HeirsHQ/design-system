@@ -6,7 +6,7 @@ const config: StorybookConfig = {
   framework: "@storybook/react-vite",
   viteFinal: async (config, { configType }) => {
     if (configType === "PRODUCTION") {
-      config.base = "/design-system/storybook/";
+      config.base = process.env.STORYBOOK_BASE_PATH ?? "/";
     }
     return config;
   },
