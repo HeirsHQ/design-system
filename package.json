@@ -24,6 +24,9 @@
     "prettier:write": "prettier --write \"./src/**/*.{js,jsx,ts,tsx}\"",
     "prettier:check": "prettier --check \"./src/**/*.{js,jsx,ts,tsx}\"",
     "prepublishOnly": "npm run build",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
