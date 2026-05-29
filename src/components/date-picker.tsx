@@ -1,5 +1,3 @@
-"use client";
-
 import { format } from "date-fns";
 import { useState } from "react";
 
@@ -43,6 +41,19 @@ type RangeDatePickerProps = {
 
 type Props = SingleDatePickerProps | RangeDatePickerProps;
 
+/**
+ * Date picker component supporting single-date and date-range selection.
+ * Renders a popover-based calendar triggered by a styled button.
+ *
+ * @example
+ * ```tsx
+ * // Single
+ * <DatePicker type="single" value={date} onValueChange={setDate} label="Due date" />
+ *
+ * // Range
+ * <DatePicker type="range" value={range} onValueChange={setRange} />
+ * ```
+ */
 export const DatePicker = (props: Props) => {
   const { className, label, labelClassName, type, disabled = false, minDate, maxDate, disabledDates } = props;
   const [open, setOpen] = useState(false);

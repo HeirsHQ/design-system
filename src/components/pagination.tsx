@@ -1,5 +1,3 @@
-"use client";
-
 import { HtChevronLeftOutline, HtChevronRightOutline, HtChevronsLeftOutline, HtChevronsRightOutline } from "../icons/index.js";
 import { Button } from "./button.js";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select.js";

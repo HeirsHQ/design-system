@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 
 import { HtEyeOutline, HtEyeOffOutline, HtSearchOutline } from "../icons/index.js";

@@ -1,5 +1,3 @@
-"use client";
-
 import { addMonths, format, subMonths, isAfter, isBefore, isSameDay, startOfMonth, isWithinInterval } from "date-fns";
 import React from "react";
 
