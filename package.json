@@ -10,13 +10,14 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./styles": "./dist/styles.css"
+    "./styles": "./dist/styles.css",
+    "./theme": "./dist/theme.css"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc && node --input-type=module --eval \"import{copyFileSync}from'node:fs';copyFileSync('src/styles.css','dist/styles.css')\"",
+    "build": "tsc && node --input-type=module --eval \"import{copyFileSync}from'node:fs';copyFileSync('src/styles.css','dist/styles.css');copyFileSync('src/theme.css','dist/theme.css')\"",
     "build:registry": "tsx scripts/build-registry.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ./src",

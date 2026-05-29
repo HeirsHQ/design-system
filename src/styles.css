@@ -1,18 +1,27 @@
 /* Heirs Design System — required styles
  *
- * Import this in your app's global CSS alongside Tailwind:
+ * This file must be imported in your app's global CSS. It registers the
+ * @source path so Tailwind v4 includes all component utility classes, and
+ * provides the animation keyframes used by Accordion and other components.
+ *
+ * Minimal Tailwind v4 setup:
  *
  *   @import "@heirshq/design-system/styles";
+ *   @import "@heirshq/design-system/theme";
+ *   @import "tailwindcss";
  *
- * Also add the dist path to your Tailwind content config so utility
- * classes used in the components are included in your build:
+ * The @source directive below is relative to the published dist/ folder, so
+ * you do NOT need to add a separate @source line for this package in your app.
  *
- *   Tailwind v4 (CSS):
- *     @source "../node_modules/@heirshq/design-system/dist";
+ * To customise tokens import the theme file, then override what you need:
  *
- *   Tailwind v3 (tailwind.config.js):
- *     content: ["./node_modules/@heirshq/design-system/dist/**\/*.js"]
+ *   @theme { --color-primary-500: #d51709; }
+ *   :root  { --radius: 0.5rem; }
+ *
+ * See @heirshq/design-system/theme for the full list of available tokens.
  */
+
+@source "./**/*.js";
 
 /* ── Accordion ─────────────────────────────────────────────────────────── */
 @keyframes accordion-down {

@@ -1,0 +1,154 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Docs/Getting Started" />
+
+# Getting Started
+
+## Installation
+
+```bash
+npm install @heirshq/design-system
+```
+
+---
+
+## Styling setup
+
+The package ships two CSS exports that work together.
+
+| Import | Purpose |
+|---|---|
+| `@heirshq/design-system/styles` | Required. Registers the `@source` path so Tailwind v4 includes component utility classes, and defines animation keyframes (Accordion, etc.). |
+| `@heirshq/design-system/theme` | Optional but recommended. Provides default `@theme` token mappings and `:root` / `.dark` CSS variables so you only need to write the values you want to change. |
+
+### Minimal setup (Tailwind v4)
+
+Add these imports at the top of your global CSS file, before `@import "tailwindcss"`:
+
+```css
+@import "@heirshq/design-system/styles";
+@import "@heirshq/design-system/theme";
+@import "tailwindcss";
+```
+
+That's it. Every component will render correctly with the default Heirs brand tokens.
+
+---
+
+## Customising tokens
+
+Because `@heirshq/design-system/theme` is imported first, any `@theme` or `:root`
+block you declare afterwards **overrides it via the CSS cascade** — no `!important`,
+no duplication required.
+
+### Override the primary color scale
+
+```css
+@import "@heirshq/design-system/styles";
+@import "@heirshq/design-system/theme";
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50:  #fef2f2;
+  --color-primary-100: #fee2e2;
+  --color-primary-200: #fecaca;
+  --color-primary-300: #fca5a5;
+  --color-primary-400: #f87171;
+  --color-primary-500: #ef4444;
+  --color-primary-600: #dc2626;
+  --color-primary-700: #b91c1c;
+  --color-primary-800: #991b1b;
+  --color-primary-900: #7f1d1d;
+  --color-primary-950: #450a0a;
+}
+```
+
+### Override semantic tokens
+
+Semantic tokens (background, foreground, radius, etc.) are raw CSS variables
+defined in `:root`. Override them the same way:
+
+```css
+:root {
+  --radius: 0.375rem;
+  --primary: oklch(0.55 0.22 29);
+  --background: oklch(0.99 0 0);
+}
+
+.dark {
+  --primary: oklch(0.65 0.2 29);
+  --background: oklch(0.12 0 0);
+}
+```
+
+### Full available token reference
+
+All tokens provided by `@heirshq/design-system/theme`:
+
+#### `@theme` mappings
+
+| Token | Maps to |
+|---|---|
+| `--color-primary-{50–950}` | Heirs brand red scale (override to change brand color) |
+| `--color-background` | `var(--background)` |
+| `--color-foreground` | `var(--foreground)` |
+| `--color-layout-background` | `var(--layout-background)` |
+| `--color-card` / `--color-card-foreground` | `var(--card)` / `var(--card-foreground)` |
+| `--color-popover` / `--color-popover-foreground` | `var(--popover)` / `var(--popover-foreground)` |
+| `--color-primary` / `--color-primary-foreground` | `var(--primary)` / `var(--primary-foreground)` |
+| `--color-secondary` / `--color-secondary-foreground` | `var(--secondary)` / `var(--secondary-foreground)` |
+| `--color-muted` / `--color-muted-foreground` | `var(--muted)` / `var(--muted-foreground)` |
+| `--color-accent` / `--color-accent-foreground` | `var(--accent)` / `var(--accent-foreground)` |
+| `--color-destructive` | `var(--destructive)` |
+| `--color-border` | `var(--border)` |
+| `--color-input` | `var(--input)` |
+| `--color-ring` | `var(--ring)` |
+| `--color-chart-{1–5}` | `var(--chart-{1–5})` |
+| `--color-sidebar-*` | `var(--sidebar-*)` |
+| `--radius-{sm,md,lg,xl,2xl,3xl,4xl}` | Calculated from `var(--radius)` |
+
+#### `:root` defaults (light)
+
+| Variable | Default |
+|---|---|
+| `--background` | `oklch(1 0 0)` |
+| `--foreground` | `oklch(0.145 0 0)` |
+| `--layout-background` | `#fafafa` |
+| `--primary` | `oklch(0.205 0 0)` |
+| `--primary-foreground` | `oklch(0.985 0 0)` |
+| `--muted` | `oklch(0.97 0 0)` |
+| `--muted-foreground` | `oklch(0.556 0 0)` |
+| `--destructive` | `oklch(0.577 0.245 27.325)` |
+| `--border` | `oklch(0.922 0 0)` |
+| `--radius` | `0.625rem` |
+
+#### `.dark` defaults
+
+| Variable | Default |
+|---|---|
+| `--background` | `oklch(0.145 0 0)` |
+| `--foreground` | `oklch(0.985 0 0)` |
+| `--primary` | `oklch(0.922 0 0)` |
+| `--muted` | `oklch(0.269 0 0)` |
+| `--destructive` | `oklch(0.704 0.191 22.216)` |
+| `--border` | `oklch(1 0 0 / 10%)` |
+
+---
+
+## Tailwind content scanning
+
+The `@source` directive is embedded in `@heirshq/design-system/styles` and
+points to the package's own `dist/` folder. **You do not need to add a manual
+`@source` line for this package in your CSS.**
+
+If you use Tailwind v3, add the content path in `tailwind.config.js` instead:
+
+```js
+// tailwind.config.js
+module.exports = {
+  content: [
+    "./src/**/*.{ts,tsx}",
+    "./node_modules/@heirshq/design-system/dist/**/*.js",
+  ],
+};
+```
