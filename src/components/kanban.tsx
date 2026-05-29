@@ -24,9 +24,9 @@ import {
 import { HtEditOutline, HtGripVerticalOutline, HtMoreOutline, HtTrashOutline } from "../icons/index.js";
 import { cn } from "../lib/utils.js";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover.js";
+import type { StatusVariant } from "./columns.js";
 
-/** Built-in named color palette for column header indicators. */
-export type StatusVariant = "amber" | "danger" | "draft" | "info" | "neutral" | "success" | "warning";
+export type { StatusVariant };
 
 /** Maps StatusVariant keys to concrete dot colors for the column header indicator. */
 const VARIANT_COLORS: Record<StatusVariant, string> = {
