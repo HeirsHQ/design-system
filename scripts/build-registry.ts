@@ -1,9 +1,10 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { registry } from "../registry/registry";
-import type { RegistryItem, RegistryIndex } from "../registry/schema";
 
-const REGISTRY_URL = "https://heirshq.github.io/heirs-design-system";
+import type { RegistryItem, RegistryIndex } from "../registry/schema";
+import { registry } from "../registry/registry";
+
+const REGISTRY_URL = "https://heirshq.github.io/design-system";
 const OUTPUT_DIR = path.join(process.cwd(), "public", "r");
 const SRC_DIR = path.join(process.cwd(), "src");
 
@@ -91,13 +92,57 @@ async function buildRegistry() {
   fs.writeFileSync(path.join(OUTPUT_DIR, "styles.json"), JSON.stringify(stylesOutput, null, 2));
   console.log("✓ Built styles.json");
 
+  const publicDir = path.join(process.cwd(), "public");
+
   // Copy registry.json to public folder
   const registryJsonPath = path.join(process.cwd(), "registry.json");
   if (fs.existsSync(registryJsonPath)) {
-    const publicDir = path.join(process.cwd(), "public");
     fs.copyFileSync(registryJsonPath, path.join(publicDir, "registry.json"));
     console.log("✓ Copied registry.json");
   }
+  const componentCount = registry.length;
+  const indexHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heirs Design System — Registry</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f9fafb; color: #111827; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 2.5rem; max-width: 560px; width: 100%; }
+    .badge { display: inline-block; background: #fef2f2; color: #991b1b; font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.75rem; border-radius: 999px; margin-bottom: 1.25rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .subtitle { color: #6b7280; font-size: 0.95rem; margin-bottom: 2rem; }
+    .stat { font-size: 0.875rem; color: #374151; margin-bottom: 1.75rem; }
+    .stat strong { color: #111827; }
+    h2 { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; margin-bottom: 0.6rem; }
+    .code-block { background: #f3f4f6; border-radius: 8px; padding: 0.875rem 1rem; font-family: "Menlo", "Monaco", monospace; font-size: 0.82rem; color: #1f2937; word-break: break-all; margin-bottom: 1.5rem; }
+    .links { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .links a { font-size: 0.85rem; color: #2563eb; text-decoration: none; }
+    .links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">shadcn/ui compatible</span>
+    <h1>Heirs Design System</h1>
+    <p class="subtitle">A component registry for internal use at Heirs Technologies.</p>
+    <p class="stat"><strong>${componentCount}</strong> components available</p>
+    <h2>Add a component</h2>
+    <div class="code-block">npx shadcn add ${REGISTRY_URL}/r/[component-name]</div>
+    <h2>Registry index</h2>
+    <div class="code-block">${REGISTRY_URL}/r/index.json</div>
+    <div class="links">
+      <a href="${REGISTRY_URL}/r/index.json">Browse registry →</a>
+      <a href="https://github.com/HeirsHQ/heirs-design-system">GitHub →</a>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  fs.writeFileSync(path.join(publicDir, "index.html"), indexHtml);
+  console.log("✓ Built index.html");
 
   console.log(`\n✅ Registry built successfully to ${OUTPUT_DIR}`);
 }
