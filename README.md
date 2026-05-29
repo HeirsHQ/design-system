@@ -20,7 +20,17 @@ Then set `NPM_TOKEN` in your environment to a GitHub token with the `read:packag
 ### Step 2 — Install the package
 
 ```bash
+# npm
 npm install @heirshq/heirs-design-system
+
+# pnpm
+pnpm add @heirshq/heirs-design-system
+
+# yarn
+yarn add @heirshq/heirs-design-system
+
+# bun
+bun add @heirshq/heirs-design-system
 ```
 
 ### Step 3 — Import the styles
@@ -43,7 +53,17 @@ In your app's global CSS file (e.g. `src/index.css` or `src/globals.css`), add:
 Several components use animation utilities from `tailwindcss-animate`. Install it if you want full animations:
 
 ```bash
+# npm
 npm install tailwindcss-animate
+
+# pnpm
+pnpm add tailwindcss-animate
+
+# yarn
+yarn add tailwindcss-animate
+
+# bun
+bun add tailwindcss-animate
 ```
 
 Then add the plugin to your CSS:
@@ -55,6 +75,94 @@ Then add the plugin to your CSS:
 
 @source "../node_modules/@heirshq/heirs-design-system/dist";
 ```
+
+---
+
+## Using with shadcn
+
+As an alternative to the NPM package, you can add individual components directly into your project using the shadcn CLI. This copies the component source files into your codebase so you own and can customise them freely — no package import needed.
+
+> **When to use which approach**
+> - **NPM package** — you want to stay in sync with updates and treat the design system as a black box
+> - **shadcn registry** — you want to own the source and customise components per project
+
+### Prerequisites
+
+You need the shadcn CLI and Tailwind CSS set up in your project. If you haven't initialised shadcn yet:
+
+```bash
+# npm
+npx shadcn init
+
+# pnpm
+pnpm dlx shadcn init
+
+# yarn
+yarn dlx shadcn init
+
+# bun
+bunx shadcn init
+```
+
+### Add a component
+
+```bash
+# npm
+npx shadcn add https://heirshq.github.io/design-system/r/[component-name]
+
+# pnpm
+pnpm dlx shadcn add https://heirshq.github.io/design-system/r/[component-name]
+
+# yarn
+yarn dlx shadcn add https://heirshq.github.io/design-system/r/[component-name]
+
+# bun
+bunx shadcn add https://heirshq.github.io/design-system/r/[component-name]
+```
+
+Replace `[component-name]` with any of the available components below. For example:
+
+```bash
+npx shadcn add https://heirshq.github.io/design-system/r/button
+```
+
+### Available components
+
+| Name              | Type      |
+| ----------------- | --------- |
+| `utils`           | lib       |
+| `icons`           | lib       |
+| `button`          | component |
+| `input`           | component |
+| `textarea`        | component |
+| `label`           | component |
+| `checkbox`        | component |
+| `switch`          | component |
+| `select`          | component |
+| `radio`           | component |
+| `slider`          | component |
+| `toggle`          | component |
+| `otp-input`       | component |
+| `date-picker`     | component |
+| `card`            | component |
+| `separator`       | component |
+| `scroll-area`     | component |
+| `table`           | component |
+| `tabs`            | component |
+| `breadcrumb`      | component |
+| `pagination`      | component |
+| `dialog`          | component |
+| `sheet`           | component |
+| `popover`         | component |
+| `dropdown-menu`   | component |
+| `tooltip`         | component |
+| `toast`           | component |
+| `progress`        | component |
+| `accordion`       | component |
+| `avatar`          | component |
+| `badge`           | component |
+
+The full registry index is available at `https://heirshq.github.io/design-system/r/index.json`.
 
 ---
 
@@ -97,7 +205,17 @@ import "./index.css";
 Make sure you have the Tailwind Vite plugin installed:
 
 ```bash
+# npm
 npm install @tailwindcss/vite
+
+# pnpm
+pnpm add @tailwindcss/vite
+
+# yarn
+yarn add @tailwindcss/vite
+
+# bun
+bun add @tailwindcss/vite
 ```
 
 ```ts
