@@ -8,7 +8,9 @@ Thank you for your interest in contributing to the Heirs Design System. This doc
 - [Development Setup](#development-setup)
 - [Project Structure](#project-structure)
 - [Adding Components](#adding-components)
+- [Adding Icons](#adding-icons)
 - [Adding Hooks](#adding-hooks)
+- [Storybook](#storybook)
 - [Code Style](#code-style)
 - [Commit Guidelines](#commit-guidelines)
 - [Pull Request Process](#pull-request-process)
@@ -36,13 +38,17 @@ Thank you for your interest in contributing to the Heirs Design System. This doc
 
 ### Available Scripts
 
-| Command                  | Description                                   |
-| ------------------------ | --------------------------------------------- |
-| `npm run build`          | Compile TypeScript to JavaScript              |
-| `npm run typecheck`      | Run TypeScript type checking without emitting |
-| `npm run lint`           | Run ESLint on source files                    |
-| `npm run prettier:write` | Format source files with Prettier             |
-| `npm run prettier:check` | Check if files are formatted correctly        |
+| Command                       | Description                                   |
+| ----------------------------- | --------------------------------------------- |
+| `npm run build`               | Compile TypeScript to JavaScript              |
+| `npm run build:registry`      | Build the component registry                  |
+| `npm run typecheck`           | Run TypeScript type checking without emitting |
+| `npm run lint`                | Run ESLint on source files                    |
+| `npm run prettier:write`      | Format source files with Prettier             |
+| `npm run prettier:write-all`  | Format all files in the project               |
+| `npm run prettier:check`      | Check if files are formatted correctly        |
+| `npm run storybook`           | Start Storybook dev server on port 6006       |
+| `npm run build-storybook`     | Build Storybook for static deployment         |
 
 ## Project Structure
 
@@ -51,22 +57,36 @@ heirs-design-system/
 ├── src/
 │   ├── components/     # UI components
 │   │   ├── button.tsx
-│   │   ├── input.tsx
+│   │   ├── card.tsx
+│   │   ├── ...
 │   │   └── index.ts    # Component exports
 │   ├── hooks/          # Custom React hooks
 │   │   ├── use-debounce.ts
+│   │   ├── ...
 │   │   └── index.ts    # Hook exports
 │   ├── icons/          # SVG icon components
 │   │   ├── icon-base.tsx
+│   │   ├── add.tsx
+│   │   ├── ...
 │   │   └── index.ts    # Icon exports
 │   ├── lib/            # Utility functions
 │   │   ├── utils.ts    # cn() and other utilities
+│   │   ├── string.ts   # String utilities
 │   │   └── index.ts    # Utility exports
+│   ├── themes/         # Design tokens
+│   │   └── colors.ts   # Color palette constants
 │   ├── types/          # TypeScript type definitions
 │   │   └── index.ts    # Type exports
 │   ├── constants/      # Constants and configuration
 │   │   └── index.ts    # Constant exports
+│   ├── stories/        # Storybook stories
+│   │   ├── Button.stories.tsx
+│   │   ├── ...
+│   │   └── Icons.stories.tsx
+│   ├── styles.css      # Global styles (exported as ./styles)
 │   └── index.ts        # Main entry point
+├── scripts/
+│   └── build-registry.ts  # Registry build script
 ├── dist/               # Compiled output (git-ignored)
 ├── package.json
 ├── tsconfig.json
@@ -131,6 +151,55 @@ export * from "./my-component.js";
 - Use Tailwind CSS classes for styling
 - Follow existing patterns in the codebase
 
+## Adding Icons
+
+All icons are SVG-based and built on top of the `IconBase` component in `src/icons/icon-base.tsx`.
+
+Icons follow the naming convention `Ht<Name>Outline` / `Ht<Name>Solid` for outline and filled variants respectively.
+
+### 1. Create the Icon File
+
+Create a new file in `src/icons/` following the naming convention `icon-name.tsx`:
+
+```tsx
+// src/icons/my-icon.tsx
+import { IconBase, type IconBaseProps } from "./icon-base.js";
+
+const HtMyIconOutline = ({ ...props }: IconBaseProps) => {
+  return (
+    <IconBase {...props}>
+      <path d="..." fill="currentColor" />
+    </IconBase>
+  );
+};
+
+const HtMyIconSolid = ({ ...props }: IconBaseProps) => {
+  return (
+    <IconBase {...props}>
+      <path d="..." fill="currentColor" />
+    </IconBase>
+  );
+};
+
+export { HtMyIconOutline, HtMyIconSolid };
+```
+
+### 2. Export the Icon
+
+Add the export to `src/icons/index.ts`:
+
+```ts
+export * from "./my-icon.js";
+```
+
+### 3. Icon Guidelines
+
+- Always wrap SVG content in `IconBase` — it provides consistent `viewBox`, `width`, `height`, and `fill="none"` defaults
+- Use `fill="currentColor"` on paths so the icon inherits its color from CSS
+- Export both an `Outline` and a `Solid` variant where applicable
+- Use the `Ht` prefix for all icon component names (e.g., `HtAddOutline`, `HtTrashSolid`)
+- Spread `...props` onto `IconBase` to allow consumers to override size and className
+
 ## Adding Hooks
 
 ### 1. Create the Hook File
@@ -178,6 +247,54 @@ export * from "./use-my-hook.js";
 - Handle cleanup in `useEffect` hooks
 - Consider SSR compatibility (use `useIsomorphicLayoutEffect` when needed)
 - Export the hook as a named export
+
+## Storybook
+
+Every component should have a corresponding story in `src/stories/`. Stories serve as living documentation and are used for visual testing.
+
+### Running Storybook
+
+```bash
+npm run storybook
+```
+
+This starts the dev server at `http://localhost:6006`.
+
+### Writing a Story
+
+Create a file in `src/stories/` named `ComponentName.stories.tsx`:
+
+```tsx
+// src/stories/MyComponent.stories.tsx
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { MyComponent } from "../components/my-component.js";
+
+const meta: Meta<typeof MyComponent> = {
+  title: "Components/MyComponent",
+  component: MyComponent,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    variant: "default",
+  },
+};
+```
+
+### Story Guidelines
+
+- Place stories in `src/stories/`, named `ComponentName.stories.tsx`
+- Use `tags: ["autodocs"]` to auto-generate the props table
+- Export at least a `Default` story; add more for key variants and states
+- Use `argTypes` to expose interactive controls for important props
+- Use `render` for stories that need to show multiple variants at once
 
 ## Code Style
 
