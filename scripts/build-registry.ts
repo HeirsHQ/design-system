@@ -153,7 +153,7 @@ async function buildRegistry() {
     <div class="links">
       <a href="${REGISTRY_URL}/storybook/">Storybook →</a>
       <a href="${REGISTRY_URL}/r/index.json">Browse registry →</a>
-      <a href="https://github.com/HeirsHQ/heirs-design-system">GitHub →</a>
+      <a href="https://github.com/HeirsHQ/design-system">GitHub →</a>
     </div>
   </div>
   <script>
