@@ -17,6 +17,18 @@ The package is hosted on GitHub Packages. Create or update your `.npmrc` file in
 
 Then set `NPM_TOKEN` in your environment to a GitHub token with the `read:packages` scope. You can create one at **GitHub → Settings → Developer settings → Personal access tokens**.
 
+> **Important:** The token must be set as an environment variable in your shell *before* running the install command, otherwise the package manager will ignore the `.npmrc` auth config and fall back to the public npm registry (resulting in a 404).
+>
+> ```bash
+> # bash / zsh
+> export NPM_TOKEN=ghp_your_token_here
+>
+> # PowerShell
+> $env:NPM_TOKEN = "ghp_your_token_here"
+> ```
+>
+> For CI environments, add `NPM_TOKEN` as a repository secret and set it via `env:` in your workflow step.
+
 ### Step 2 — Install the package
 
 ```bash
@@ -108,22 +120,22 @@ bunx shadcn init
 
 ```bash
 # npm
-npx shadcn add https://heirshq.github.io/design-system/r/[component-name]
+npx shadcn add https://heirshq.github.io/design-system/r/[component-name].json
 
 # pnpm
-pnpm dlx shadcn add https://heirshq.github.io/design-system/r/[component-name]
+pnpm dlx shadcn add https://heirshq.github.io/design-system/r/[component-name].json
 
 # yarn
-yarn dlx shadcn add https://heirshq.github.io/design-system/r/[component-name]
+yarn dlx shadcn add https://heirshq.github.io/design-system/r/[component-name].json
 
 # bun
-bunx shadcn add https://heirshq.github.io/design-system/r/[component-name]
+bunx shadcn add https://heirshq.github.io/design-system/r/[component-name].json
 ```
 
 Replace `[component-name]` with any of the available components below. For example:
 
 ```bash
-npx shadcn add https://heirshq.github.io/design-system/r/button
+npx shadcn add https://heirshq.github.io/design-system/r/button.json
 ```
 
 ### Available components

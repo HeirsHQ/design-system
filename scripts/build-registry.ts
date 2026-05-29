@@ -143,10 +143,10 @@ async function buildRegistry() {
       <button class="tab" onclick="switchTab(event, 'yarn')">yarn</button>
       <button class="tab" onclick="switchTab(event, 'bun')">bun</button>
     </div>
-    <div id="npx" class="tab-panel active"><div class="code-wrap">npx shadcn add ${REGISTRY_URL}/r/[component-name]</div></div>
-    <div id="pnpm" class="tab-panel"><div class="code-wrap">pnpm dlx shadcn add ${REGISTRY_URL}/r/[component-name]</div></div>
-    <div id="yarn" class="tab-panel"><div class="code-wrap">yarn dlx shadcn add ${REGISTRY_URL}/r/[component-name]</div></div>
-    <div id="bun" class="tab-panel"><div class="code-wrap">bunx shadcn add ${REGISTRY_URL}/r/[component-name]</div></div>
+    <div id="npx" class="tab-panel active"><div class="code-wrap">npx shadcn add ${REGISTRY_URL}/r/[component-name].json</div></div>
+    <div id="pnpm" class="tab-panel"><div class="code-wrap">pnpm dlx shadcn add ${REGISTRY_URL}/r/[component-name].json</div></div>
+    <div id="yarn" class="tab-panel"><div class="code-wrap">yarn dlx shadcn add ${REGISTRY_URL}/r/[component-name].json</div></div>
+    <div id="bun" class="tab-panel"><div class="code-wrap">bunx shadcn add ${REGISTRY_URL}/r/[component-name].json</div></div>
 
     <h2>Registry index</h2>
     <div class="code-block">${REGISTRY_URL}/r/index.json</div>
