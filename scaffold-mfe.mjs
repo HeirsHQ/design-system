@@ -783,9 +783,7 @@ const constName =
     .join("") + "Module";
 console.log(`   ${cyan(`const ${constName} = lazy(() => import("${NAME}/Module"));`)}`);
 console.log(`   ${dim("// then inside <DashboardShell>:")}`);
-console.log(
-  `   ${cyan(`<Route path="/super-admin/${SLUG}/*" element={<Remote name="${NAME}"><${constName} /></Remote>} />`)}\n`,
-);
+console.log(`   ${cyan(`<Route path="/super-admin/${SLUG}/*" element={<Remote name="${NAME}"><${constName} /></Remote>} />`)}\n`);
 
 console.log(`${bold("6.")} Start the dev server:\n`);
 console.log(`   ${cyan(`cd ${NAME} && pnpm dev`)}\n`);

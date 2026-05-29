@@ -220,11 +220,11 @@ npx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 400
 
 ### Options
 
-| Flag       | Required | Description                                                        |
-| ---------- | -------- | ------------------------------------------------------------------ |
-| `--name`   | Yes      | Full module name — must match `converge-{slug}-mfe`                |
-| `--port`   | Yes      | Dev server port (1025–65535)                                       |
-| `--routes` | No       | Comma-separated page route slugs (default: `overview`)             |
+| Flag       | Required | Description                                            |
+| ---------- | -------- | ------------------------------------------------------ |
+| `--name`   | Yes      | Full module name — must match `converge-{slug}-mfe`    |
+| `--port`   | Yes      | Dev server port (1025–65535)                           |
+| `--routes` | No       | Comma-separated page route slugs (default: `overview`) |
 
 ```bash
 # Scaffold with multiple routes
