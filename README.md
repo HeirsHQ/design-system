@@ -33,16 +33,16 @@ Then set `NPM_TOKEN` in your environment to a GitHub token with the `read:packag
 
 ```bash
 # npm
-npm install @heirshq/heirs-design-system
+npm install @heirshq/design-system
 
 # pnpm
-pnpm add @heirshq/heirs-design-system
+pnpm add @heirshq/design-system
 
 # yarn
-yarn add @heirshq/heirs-design-system
+yarn add @heirshq/design-system
 
 # bun
-bun add @heirshq/heirs-design-system
+bun add @heirshq/design-system
 ```
 
 ### Step 3 — Import the styles
@@ -51,13 +51,13 @@ In your app's global CSS file (e.g. `src/index.css` or `src/globals.css`), add:
 
 ```css
 @import "tailwindcss";
-@import "@heirshq/heirs-design-system/styles";
+@import "@heirshq/design-system/styles";
 
 /* Tell Tailwind to scan the design system's compiled files */
-@source "../node_modules/@heirshq/heirs-design-system/dist";
+@source "../node_modules/@heirshq/design-system/dist";
 ```
 
-> The `@import "@heirshq/heirs-design-system/styles"` line loads required keyframe animations (e.g. accordion open/close).
+> The `@import "@heirshq/design-system/styles"` line loads required keyframe animations (e.g. accordion open/close).
 > The `@source` directive ensures Tailwind includes the component utility classes in your CSS build.
 
 ### Step 4 — (Optional) Install animation support
@@ -83,9 +83,9 @@ Then add the plugin to your CSS:
 ```css
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
-@import "@heirshq/heirs-design-system/styles";
+@import "@heirshq/design-system/styles";
 
-@source "../node_modules/@heirshq/heirs-design-system/dist";
+@source "../node_modules/@heirshq/design-system/dist";
 ```
 
 ---
@@ -186,9 +186,9 @@ The full registry index is available at `https://heirshq.github.io/design-system
 
 ```css
 @import "tailwindcss";
-@import "@heirshq/heirs-design-system/styles";
+@import "@heirshq/design-system/styles";
 
-@source "../node_modules/@heirshq/heirs-design-system/dist";
+@source "../node_modules/@heirshq/design-system/dist";
 ```
 
 **`app/layout.tsx`**
@@ -203,9 +203,9 @@ import "./globals.css";
 
 ```css
 @import "tailwindcss";
-@import "@heirshq/heirs-design-system/styles";
+@import "@heirshq/design-system/styles";
 
-@source "../node_modules/@heirshq/heirs-design-system/dist";
+@source "../node_modules/@heirshq/design-system/dist";
 ```
 
 **`src/main.tsx`**
@@ -248,7 +248,7 @@ If your project still uses Tailwind v3, add the dist path to the `content` array
 ```js
 // tailwind.config.js
 module.exports = {
-  content: ["./src/**/*.{js,ts,jsx,tsx}", "./node_modules/@heirshq/heirs-design-system/dist/**/*.js"],
+  content: ["./src/**/*.{js,ts,jsx,tsx}", "./node_modules/@heirshq/design-system/dist/**/*.js"],
 };
 ```
 
@@ -274,7 +274,7 @@ module.exports = {
 ## Usage
 
 ```tsx
-import { Button, Input, Card, CardHeader, CardContent } from "@heirshq/heirs-design-system";
+import { Button, Input, Card, CardHeader, CardContent } from "@heirshq/design-system";
 
 function LoginForm() {
   return (
@@ -305,7 +305,7 @@ function LoginForm() {
 ### Icons
 
 ```tsx
-import { HtCalendarOutline, HtCheckSolid } from "@heirshq/heirs-design-system";
+import { HtCalendarOutline, HtCheckSolid } from "@heirshq/design-system";
 
 <HtCalendarOutline className="h-5 w-5" />
 <HtCheckSolid className="h-4 w-4 text-green-600" />
@@ -314,7 +314,7 @@ import { HtCalendarOutline, HtCheckSolid } from "@heirshq/heirs-design-system";
 ### Class name utility
 
 ```tsx
-import { cn } from "@heirshq/heirs-design-system";
+import { cn } from "@heirshq/design-system";
 
 const className = cn("px-4 py-2 rounded", isActive && "bg-blue-500");
 ```
