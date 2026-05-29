@@ -1,4 +1,6 @@
 export * from "./accordion.js";
+export * from "./columns.js";
+export * from "../lib/create-columns.js";
 export * from "./avatar.js";
 export * from "./badge.js";
 export * from "./breadcrumb.js";
