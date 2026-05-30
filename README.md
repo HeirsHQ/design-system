@@ -185,27 +185,73 @@ The package ships a `create-mfe` CLI that scaffolds a new Converge micro-fronten
 
 ### Prerequisites
 
-Because the package is hosted on GitHub Packages, your shell must have a valid PAT exported **before** running `dlx` — otherwise the package manager cannot resolve `@heirshq/design-system` and the command will fail.
+The package is hosted on GitHub Packages, so you need a PAT with the `read:packages` scope before `pnpm dlx` can resolve it.
 
-**1. Create a PAT** at GitHub → Settings → Developer settings → Personal access tokens with the `read:packages` scope.
+**Create a PAT** at GitHub → Settings → Developer settings → Personal access tokens → `read:packages`.
 
-**2. Export it in your shell:**
+#### Option A — Permanent setup (recommended)
+
+Do this once and the scaffolder will always work, regardless of which directory you run it from.
+
+**1. Add the registry to your global npmrc.**
+
+The global file is `~/.npmrc` on macOS/Linux or `C:\Users\<you>\.npmrc` on Windows. Create it if it doesn't exist:
+
+```
+@heirshq:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+```
+
+**2. Add `NPM_TOKEN` to your shell profile** so it's exported in every session.
+
+```bash
+# bash — append to ~/.bashrc or ~/.bash_profile
+echo 'export NPM_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"' >> ~/.bashrc
+
+# zsh — append to ~/.zshrc
+echo 'export NPM_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"' >> ~/.zshrc
+```
+
+```powershell
+# PowerShell — append to your $PROFILE (creates it if missing)
+Add-Content -Path $PROFILE -Value '$env:NPM_TOKEN = "ghp_xxxxxxxxxxxxxxxxxxxx"'
+```
+
+After editing the profile, reload it (`source ~/.zshrc`, `. $PROFILE`, etc.) or open a new terminal.
+
+#### Option B — Temporary (current session only)
+
+Set the token for the current shell session, then run the command normally:
 
 ```bash
 # bash / zsh
 export NPM_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
+pnpm dlx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
 ```
 
 ```powershell
 # PowerShell
 $env:NPM_TOKEN = "ghp_xxxxxxxxxxxxxxxxxxxx"
+pnpm dlx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
 ```
 
-**3. Ensure your `.npmrc` maps the scope to GitHub Packages:**
+> This requires the global `.npmrc` from Option A to already exist (so pnpm knows where to resolve `@heirshq`). The token expires at the end of the session.
 
+#### Option C — Fully inline (no `.npmrc` needed)
+
+Pass the registry and token directly as `--config.` flags. Nothing is stored on disk:
+
+```bash
+# bash / zsh
+pnpm dlx \
+  --config.@heirshq:registry=https://npm.pkg.github.com \
+  --config.//npm.pkg.github.com/:_authToken=ghp_xxxxxxxxxxxxxxxxxxxx \
+  @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
 ```
-@heirshq:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+
+```powershell
+# PowerShell (one line)
+pnpm dlx --config.@heirshq:registry=https://npm.pkg.github.com --config.//npm.pkg.github.com/:_authToken=ghp_xxxxxxxxxxxxxxxxxxxx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
 ```
 
 ### Usage
