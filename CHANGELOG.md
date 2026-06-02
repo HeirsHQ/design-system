@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Chart Components** — composable chart wrappers built on shadcn + Recharts
+  - `AreaChart` — area chart with optional stacking and fill opacity control
+  - `BarChart` — bar chart supporting horizontal/vertical layout and stacking
+  - `LineChart` — line chart with curved interpolation and dot visibility options
+  - `PieChart` — pie/donut chart with configurable inner radius
+- **Chart types** — `ChartDataPoint`, `ChartSeries`, `BaseChartProps`, `BarChartProps`, `LineChartProps`, `AreaChartProps`, `PieChartDataPoint`, `PieChartProps`
+- **Chart utilities** — `DEFAULT_COLORS`, `toColorKey`, `seriesToChartConfig`, `pieDataToChartConfig`
+
 ### Changed
 
 - README trimmed to installation and usage documentation only

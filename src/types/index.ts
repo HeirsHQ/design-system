@@ -1,3 +1,4 @@
+export * from "./chart.js";
 export * from "./form.js";
 
 export type Maybe<T> = T | null | undefined;
