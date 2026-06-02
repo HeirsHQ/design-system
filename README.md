@@ -174,6 +174,11 @@ npx shadcn add https://heirshq.github.io/design-system/r/button.json
 | `accordion`     | component |
 | `avatar`        | component |
 | `badge`         | component |
+| `chart`         | component |
+| `area-chart`    | component |
+| `bar-chart`     | component |
+| `line-chart`    | component |
+| `pie-chart`     | component |
 
 The full registry index is available at `https://heirshq.github.io/design-system/r/index.json`.
 
@@ -401,18 +406,18 @@ module.exports = {
 
 ## Peer Dependencies
 
-| Package               | Required | Notes                                                             |
-| --------------------- | -------- | ----------------------------------------------------------------- |
-| `react` ≥ 18          | Yes      |                                                                   |
-| `react-dom` ≥ 18      | Yes      |                                                                   |
-| `tailwindcss` ≥ 4     | Yes      |                                                                   |
-| `tailwindcss-animate` | No       | Required for dialog, sheet, tooltip, and other overlay animations |
-| `recharts` ≥ 3        | No       | Required only if using `Chart` components                         |
-| `cmdk` ≥ 1            | No       | Required only if using `Command`                                  |
-| `sonner` ≥ 2          | No       | Required only if using `Toast`                                    |
-| `react-hook-form` ≥ 7 | No       | Required only if using `Form` / `FieldRenderer`                   |
-| `zod` ≥ 3             | No       | Required only if using `Form` with Zod schemas                    |
-| `@base-ui/react` ≥ 1  | No       | Required only if using `Calendar`                                 |
+| Package               | Required | Notes                                                                                          |
+| --------------------- | -------- | ---------------------------------------------------------------------------------------------- |
+| `react` ≥ 18          | Yes      |                                                                                                |
+| `react-dom` ≥ 18      | Yes      |                                                                                                |
+| `tailwindcss` ≥ 4     | Yes      |                                                                                                |
+| `tailwindcss-animate` | No       | Required for dialog, sheet, tooltip, and other overlay animations                              |
+| `recharts` ≥ 3        | No       | Required only if using `Chart`, `AreaChart`, `BarChart`, `LineChart`, or `PieChart` components |
+| `cmdk` ≥ 1            | No       | Required only if using `Command`                                                               |
+| `sonner` ≥ 2          | No       | Required only if using `Toast`                                                                 |
+| `react-hook-form` ≥ 7 | No       | Required only if using `Form` / `FieldRenderer`                                                |
+| `zod` ≥ 3             | No       | Required only if using `Form` with Zod schemas                                                 |
+| `@base-ui/react` ≥ 1  | No       | Required only if using `Calendar`                                                              |
 
 ---
 
