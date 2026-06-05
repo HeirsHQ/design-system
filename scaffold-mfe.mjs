@@ -323,7 +323,10 @@ export default {
   },
   devServer: {
     port: ${portNum},
-    headers: { "Access-Control-Allow-Origin": "*" },
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Private-Network": "true",
+    },
     historyApiFallback: {
       index: "/index.html",
       htmlAcceptHeaders: ["text/html", "application/xhtml+xml"],
