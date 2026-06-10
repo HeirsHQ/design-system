@@ -1,6 +1,6 @@
 {
   "name": "@heirshq/design-system",
-  "version": "1.14.0",
+  "version": "1.14.1",
   "description": "Heirs Design System - A reusable component library",
   "type": "module",
   "main": "./dist/index.js",
