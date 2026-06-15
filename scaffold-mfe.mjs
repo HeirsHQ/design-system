@@ -83,9 +83,11 @@ write(
     "format": "prettier --write \\"${NAME}/src/**/*.{ts,tsx}\\""
   },
   "dependencies": {
+    "@heirshq/design-system": "1.14.3",
     "@module-federation/enhanced": "^2.1.0",
     "@tanstack/react-query": "^5.100.14",
     "@tanstack/react-table": "^8.21.3",
+    "axios": "^1.16.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.40.0",
@@ -125,8 +127,20 @@ write(
     "tailwindcss": "^4.3.0",
     "tslib": "^2.3.0",
     "typescript": "~5.9.2"
+  },
+  "imports": {
+    "#components/*": "./src/components/*.tsx",
+    "#lib/*": "./src/lib/*.ts",
+    "#hooks/*": "./src/hooks/*.ts"
   }
 }
+`,
+);
+
+write(
+  join(WORKSPACE, ".npmrc"),
+  `@heirshq:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=\${NPM_TOKEN}
 `,
 );
 
@@ -202,11 +216,11 @@ write(
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "es2022",
-    "ignoreDeprecations": "6.0",
-    "baseUrl": "."
+
+    "target": "es2022"
   }
 }
 `,
@@ -224,25 +238,54 @@ write(
 );
 
 write(
+  join(WORKSPACE, "vercel.json"),
+  `{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/remoteEntry.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/(.*)\\\\.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
+}
+`,
+);
+
+write(
   join(APP, "components.json"),
   `{
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "new-york",
+  "style": "radix-nova",
   "rsc": false,
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "src/styles.css",
-    "baseColor": "zinc",
+    "css": "src/styles/globals.css",
+    "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
   },
   "aliases": {
-    "components": "#components",
-    "utils": "#lib/utils",
-    "ui": "#components/ui",
-    "lib": "#lib",
-    "hooks": "#hooks"
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
   },
   "iconLibrary": "lucide"
 }
@@ -270,6 +313,8 @@ write(
   join(APP, "module-federation.config.ts"),
   `import { ModuleFederationConfig } from "@nx/module-federation";
 
+const SHELL_URL = process.env["NX_CONVERGE_SHELL_MFE_URL"] ?? "http://localhost:4000";
+
 const SHARED_SINGLETONS = [
   "react",
   "react-dom",
@@ -277,10 +322,26 @@ const SHARED_SINGLETONS = [
   "@tanstack/react-query",
   "sonner",
   "zustand",
+  "@heirshq/design-system",
 ];
+
+const buildShellRemote = (): string => \`promise new Promise(function(resolve, reject) {
+  if (window.converge_shell_mfe) { resolve(window.converge_shell_mfe); return; }
+  var base = window.__SHELL_URL__ || '\${SHELL_URL}';
+  if (base.charAt(base.length - 1) === '/') base = base.slice(0, -1);
+  var script = document.createElement('script');
+  script.src = base + '/remoteEntry.js';
+  script.onload = function() {
+    if (!window.converge_shell_mfe) { reject(new Error('Shell container not found on window')); return; }
+    resolve(window.converge_shell_mfe);
+  };
+  script.onerror = function() { reject(new Error('Shell remote failed to load from ' + script.src)); };
+  document.head.appendChild(script);
+})\`;
 
 const config: ModuleFederationConfig = {
   name: "${NAME}",
+  remotes: [["converge-shell-mfe", buildShellRemote()]],
   exposes: {
     "./Module": "./src/remote-entry.ts",
   },
@@ -322,7 +383,18 @@ export default {
     publicPath: "auto",
   },
   devServer: {
+    allowedHosts: "all",
+    client: {
+      webSocketURL: { hostname: "localhost", port: ${portNum}, protocol: "wss", pathname: "/ws" },
+    },
     port: ${portNum},
+    server: {
+      type: 'https',
+      options: {
+        key: resolve(__dirname, '../../converge-shell-mfe/localhost+1-key.pem'),
+        cert: resolve(__dirname, '../../converge-shell-mfe/localhost+1.pem'),
+      },
+    },
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Private-Network": "true",
@@ -330,6 +402,23 @@ export default {
     historyApiFallback: {
       index: "/index.html",
       htmlAcceptHeaders: ["text/html", "application/xhtml+xml"],
+    },
+    setupMiddlewares: (middlewares: any[], _devServer: any) => {
+      middlewares.unshift({
+        name: "pna-handler",
+        middleware: (req: any, res: any, next: any) => {
+          res.setHeader("Access-Control-Allow-Origin", "*");
+          res.setHeader("Access-Control-Allow-Private-Network", "true");
+          if (req.method === "OPTIONS") {
+            res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+            res.setHeader("Access-Control-Allow-Headers", "*");
+            res.writeHead(204);
+            return res.end();
+          }
+          next();
+        },
+      });
+      return middlewares;
     },
   },
   plugins: [
@@ -345,7 +434,6 @@ export default {
     }),
     new NxReactRspackPlugin({}),
     new NxModuleFederationPlugin({ config }, { dts: false }),
-    new DefinePlugin(nxEnvVars),
   ],
 };
 `,
@@ -365,12 +453,14 @@ write(
   "compilerOptions": {
     "jsx": "react-jsx",
     "allowJs": false,
-    "esModuleInterop": false,
+
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "lib": ["es2022", "dom", "dom.iterable"],
     "module": "ESNext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "resolvePackageJsonImports": true
   },
   "files": [],
   "include": [],
@@ -443,7 +533,123 @@ write(
 
 write(
   join(APP, "src/lib/client.ts"),
-  `// HTTP client setup
+  `import axios, { type AxiosInstance, AxiosError, InternalAxiosRequestConfig } from "axios";
+
+export type ServiceKey =
+  | "app-builder"
+  | "attrition"
+  | "employee"
+  | "finance"
+  | "identity"
+  | "import"
+  | "leave"
+  | "notification"
+  | "organization"
+  | "payroll"
+  | "questionnaire"
+  | "tenant"
+  | "workflow";
+
+const SERVICE_URLS: Record<ServiceKey, string | undefined> = {
+  "app-builder": process.env["NX_APP_BUILDER_SERVICE"],
+  attrition: process.env["NX_ATTRITION_SERVICE"],
+  employee: process.env["NX_EMPLOYEE_SERVICE"],
+  finance: process.env["NX_FINANCE_SERVICE"],
+  identity: process.env["NX_IDENTITY_SERVICE"],
+  import: process.env["NX_IMPORT_SERVICE"],
+  leave: process.env["NX_LEAVE_SERVICE"],
+  notification: process.env["NX_NOTIFICATION_SERVICE"],
+  organization: process.env["NX_ORGANIZATION_SERVICE"],
+  payroll: process.env["NX_PAYROLL_SERVICE"],
+  questionnaire: process.env["NX_QUESTIONNAIRE_SERVICE"],
+  tenant: process.env["NX_TENANT_SERVICE"],
+  workflow: process.env["NX_WORKFLOW_SERVICE"],
+};
+
+type RetryableRequest = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+  _retryCount?: number;
+};
+
+const MAX_RETRIES = 3;
+
+const instanceCache = new Map<ServiceKey, AxiosInstance>();
+
+const createInstance = (key: ServiceKey): AxiosInstance => {
+  const baseURL = SERVICE_URLS[key];
+  if (!baseURL) {
+    throw new Error(
+      \`No URL configured for service "\${key}". \` +
+        \`Set the \${key.toUpperCase()}_SERVICE environment variable.\`,
+    );
+  }
+
+  const instance = axios.create({ baseURL, timeout: 30_000, withCredentials: true });
+
+  instance.interceptors.response.use(
+    (res) => res,
+    async (error: AxiosError) => {
+      const req = error.config as RetryableRequest | undefined;
+      if (!req) return Promise.reject(error);
+
+      const retryCount = req._retryCount ?? 0;
+      const isServerError = !error.response || error.response.status >= 500;
+
+      if (isServerError && retryCount < MAX_RETRIES) {
+        req._retryCount = retryCount + 1;
+        const delay = 300 * 2 ** retryCount;
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        return instance(req);
+      }
+
+      if (error.response?.status === 401 && !req._retry) {
+        req._retry = true;
+        try {
+          localStorage.removeItem("CONVERGE_USER");
+        } catch {
+          /* ignore */
+        }
+        window.location.href = "/";
+      }
+
+      return Promise.reject(error);
+    },
+  );
+
+  return instance;
+};
+
+const getClient = (key: ServiceKey): AxiosInstance => {
+  let instance = instanceCache.get(key);
+  if (!instance) {
+    instance = createInstance(key);
+    instanceCache.set(key, instance);
+  }
+  return instance;
+};
+
+export const http = {
+  get: <T>(service: ServiceKey, url: string, params?: object) =>
+    getClient(service)
+      .get<T>(url, { params })
+      .then((r) => r.data),
+  post: <T>(service: ServiceKey, url: string, data?: unknown) =>
+    getClient(service)
+      .post<T>(url, data)
+      .then((r) => r.data),
+  put: <T>(service: ServiceKey, url: string, data?: unknown) =>
+    getClient(service)
+      .put<T>(url, data)
+      .then((r) => r.data),
+  patch: <T>(service: ServiceKey, url: string, data?: unknown) =>
+    getClient(service)
+      .patch<T>(url, data)
+      .then((r) => r.data),
+  delete: <T>(service: ServiceKey, url: string, data?: unknown) =>
+    getClient(service)
+      .delete<T>(url, { data })
+      .then((r) => r.data),
+};
 `,
 );
 
@@ -766,27 +972,30 @@ ${dim("─".repeat(60))}
 console.log(`${bold("1.")} Install dependencies:\n`);
 console.log(`   ${cyan(`cd ${NAME} && pnpm install`)}\n`);
 
-console.log(`${bold("2.")} Add to ${yellow("converge-shell-mfe/src/config/remotes.ts")}:\n`);
-console.log(`   ${cyan(`"${NAME}": process.env["NX_${ENV_KEY}_URL"] ?? "http://localhost:${portNum}",`)}\n`);
+console.log(`${bold("2.")} Add to ${yellow("converge-shell-mfe/converge-shell-mfe/src/config/remotes.ts")} (REMOTE_DEFAULTS):\n`);
+console.log(`   ${cyan(`"${NAME}": "https://localhost:${portNum}",`)}\n`);
 
-console.log(`${bold("3.")} Add to ${yellow("converge-shell-mfe/module-federation.config.ts")} remotes array:\n`);
-console.log(`   ${cyan(`["${NAME}", REMOTE_URLS["${NAME}"]],`)}\n`);
+console.log(`${bold("3.")} Add to ${yellow("converge-shell-mfe/converge-shell-mfe/module-federation.config.ts")} remotes array:\n`);
+console.log(`   ${cyan(`["${NAME}", buildPromiseRemote("${NAME}")],`)}\n`);
 
-console.log(`${bold("4.")} Add to ${yellow("converge-shell-mfe/src/types/remotes.d.ts")}:\n`);
+console.log(`${bold("4.")} Add to ${yellow("converge-shell-mfe/converge-shell-mfe/src/types/remotes.d.ts")}:\n`);
 console.log(`   ${cyan(`declare module "${NAME}/Module" {`)}`);
 console.log(`   ${cyan(`  import { ComponentType } from "react";`)}`);
 console.log(`   ${cyan(`  const Module: ComponentType;`)}`);
 console.log(`   ${cyan(`  export default Module;`)}`);
 console.log(`   ${cyan(`}`)}\n`);
 
-console.log(`${bold("5.")} Add to ${yellow("converge-shell-mfe/src/app/app.tsx")}:\n`);
+console.log(`${bold("5.")} Add to ${yellow("converge-shell-mfe/converge-shell-mfe/src/app/app.tsx")}:\n`);
 const constName =
   SLUG.split("-")
     .map((w, i) => (i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w.charAt(0).toUpperCase() + w.slice(1)))
     .join("") + "Module";
 console.log(`   ${cyan(`const ${constName} = lazy(() => import("${NAME}/Module"));`)}`);
 console.log(`   ${dim("// then inside <DashboardShell>:")}`);
-console.log(`   ${cyan(`<Route path="/super-admin/${SLUG}/*" element={<Remote name="${NAME}"><${constName} /></Remote>} />`)}\n`);
+console.log(`   ${cyan(`<Route path="/admin/${SLUG}/*" element={<Remote name="${NAME}"><${constName} /></Remote>} />`)}\n`);
 
-console.log(`${bold("6.")} Start the dev server:\n`);
+console.log(`${bold("6.")} Add to ${yellow("converge-shell-mfe/converge-shell-mfe/public/remotes.example.js")} (and your local remotes.js):\n`);
+console.log(`   ${cyan(`"${NAME}": "https://localhost:${portNum}",`)}\n`);
+
+console.log(`${bold("7.")} Start the dev server:\n`);
 console.log(`   ${cyan(`cd ${NAME} && pnpm dev`)}\n`);
