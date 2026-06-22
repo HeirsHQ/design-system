@@ -184,6 +184,59 @@ The full registry index is available at `https://heirshq.github.io/design-system
 
 ---
 
+## App Scaffolder
+
+The package ships a `create-app` CLI that scaffolds a complete standalone **Next.js (App Router)** application, pre-wired to consume this design system — no local install required. The design system is public, so no token is needed to run it.
+
+### What you get
+
+A new Next.js app at `./<app-name>/` containing:
+
+- **Design system wired in** — `@heirshq/design-system` is added as a dependency and all UI/form components are imported from it. Tailwind v4, the shadcn `components.json`, PostCSS, the global theme tokens and `@import "@heirshq/design-system/styles"` are all configured.
+- **API layer** — a typed Axios client with `/api/proxy` service routing, plus the react-query hook layer (`useApiQuery`, `usePaginatedQuery`, `useApiMutation`).
+- **App shell** — `Sidebar` + `Header` with an empty navigation config (`src/config/route.ts`) to fill in, an empty `admin/overview` page to start from, and all `(auth)` pages.
+- **State & access** — zustand user store, `WithAuth` guard, app provider, error boundary, inactivity handling, and the permission resolver (`lib/permissions`, `lib/rbac`).
+
+Only the app-specific `sidebar`, `header`, `sign-out`, `notifications` and `logo` live in the app; everything else comes from the package.
+
+### Usage
+
+```bash
+# pnpm (recommended)
+pnpm dlx @heirshq/design-system create-app <app-name>
+
+# npm
+npx @heirshq/design-system create-app <app-name>
+```
+
+The `<app-name>` is a positional argument used for **both** the folder name and the `package.json` name — e.g. `create-app acme-console` creates `./acme-console/`.
+
+### Options
+
+| Argument / Flag | Required | Description                                               |
+| --------------- | -------- | --------------------------------------------------------- |
+| `<app-name>`    | Yes      | Kebab-case name — names the folder and the `package.json` |
+| `--title`       | No       | Document title used in the root layout (default: derived) |
+| `--dir`         | No       | Parent directory to create the app in (default: cwd)      |
+| `--force`       | No       | Allow scaffolding into a non-empty directory              |
+
+```bash
+pnpm dlx @heirshq/design-system create-app acme-console --title "Acme Console" --dir ./apps
+```
+
+### After scaffolding
+
+```bash
+cd <app-name>
+pnpm install
+# set your *_SERVICE URLs in .env, then
+pnpm dev
+```
+
+The scaffolder also seeds a `.env` (with a generated `NEXT_PUBLIC_ENCRYPTION_SECRET`) and an `.npmrc` mapping the `@heirshq` scope to GitHub Packages.
+
+---
+
 ## MFE Scaffolder
 
 The package ships a `create-mfe` CLI that scaffolds a new Converge micro-frontend workspace — no local install required.

@@ -1,0 +1,62 @@
+name: Build API Image
+
+on:
+  pull_request:
+    branches:
+      - main
+      - deploy
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Set up node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm install --no-frozen-lockfile
+
+      - name: Check dependencies
+        run: |
+          pnpm check
+
+      - name: Build
+        env:
+          ALERT_SERVICE: https://attrition-stg.convergerp.com/api/v1
+          ATTRITION_SERVICE: https://attrition-stg.convergerp.com/api/v1
+          EMPLOYEE_SERVICE: https://employee-stg.convergerp.com/api/v1
+          FINANCE_SERVICE: https://finance-stg.convergerp.com/api/v1
+          IDENTITY_SERVICE: https://identity-stg.convergerp.com/api/v1
+          IMPORT_SERVICE: https://import-export-stg.convergerp.com/api/v1
+          LEAVE_SERVICE: https://leave-stg.convergerp.com/api/v1
+          NOTIFICATION_SERVICE: https://notification-stg.convergerp.com/api/v1
+          ORGANIZATION_SERVICE: https://organization-stg.convergerp.com/api/v1
+          PAYROLL_SERVICE: https://payroll-stg.convergerp.com/api/v1
+          QUESTIONNAIRE_SERVICE: https://questionnaire-stg.convergerp.com/api/v1
+          TENANT_SERVICE: https://tenant-stg.convergerp.com/api/v1
+          WORKFLOW_SERVICE: https://workflow-stg.convergerp.com/api/v1
+          APPRAISAL_SERVICE: https://employee-appraisal-stg.convergerp.com./api/v1
+          KPI_TRACKING_SERVICE: https://kpi-tracking-stg.convergerp.com/api/v1
+          DOCUMENTS_SERVICE: https://document-stg.convergerp.com/api/v1
+          GOAL_SERVICE: https://goals-stg.convergerp.com/api/v1
+          PERFORMANCE_SERVICE: https://performance-stg.convergerp.com/api/v1
+          REVIEWS_SERVICE: https://review-stg.convergerp.com/api/v1
+          SEQUENCE_SERVICE: https://sequence-stg.convergerp.com/api/v1
+          TALENT_SERVICE: https://talent-stg.convergerp.com/api/v1
+          NEXT_PUBLIC_ENCRYPTION_SECRET: 221c70f43ba06d186127c695719e0fd9b1edc162ab0d2d272afa7644f8a0d4b0
+          NEXT_PUBLIC_CONVERGE_ACCOUNTING_URL: http://ec2-18-134-249-147.eu-west-2.compute.amazonaws.com:3000
+
+        run: |
+          pnpm build

@@ -24,15 +24,17 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { type StatusVariant } from "@/config/columns/shared";
-import { cn } from "@/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover.js";
+import type { StatusVariant } from "./columns.js";
+import { cn } from "../lib/utils.js";
 
 /** Maps StatusVariant keys to concrete dot colors for the column header indicator. */
 const VARIANT_COLORS: Record<StatusVariant, string> = {
+  amber: "var(--color-gray-500)",
   danger: "var(--color-red-500)",
-  default: "var(--color-gray-500)",
+  draft: "var(--color-gray-500)",
   info: "var(--color-blue-500)",
+  neutral: "var(--color-neutral-500)",
   success: "var(--color-green-500)",
   warning: "var(--color-yellow-500)",
 };
@@ -48,8 +50,7 @@ function resolveColor(color: string): string {
 // card id can never collide with a column id (e.g. an issue id == a status id).
 const CARD_ID_PREFIX = "card:";
 const toCardDragId = (id: string) => `${CARD_ID_PREFIX}${id}`;
-const fromCardDragId = (dragId: string) =>
-  dragId.startsWith(CARD_ID_PREFIX) ? dragId.slice(CARD_ID_PREFIX.length) : dragId;
+const fromCardDragId = (dragId: string) => (dragId.startsWith(CARD_ID_PREFIX) ? dragId.slice(CARD_ID_PREFIX.length) : dragId);
 
 /** Minimum shape required for items used in the Kanban board. */
 export interface KanbanItemBase {
@@ -90,7 +91,7 @@ interface KanbanProps<T extends KanbanItemBase> {
   columnEmptyState?: ReactNode;
   className?: string;
   /** Shorter columns — used for swimlane bands so stacked lanes stay readable. */
-  compact?: boolean;
+  compact?: boolean | undefined;
 }
 
 interface KanbanColumnProps<T extends KanbanItemBase> {
@@ -101,7 +102,7 @@ interface KanbanColumnProps<T extends KanbanItemBase> {
   onDelete?: () => void;
   columnEmptyState?: ReactNode;
   sortableId: string;
-  compact?: boolean;
+  compact?: boolean | undefined;
 }
 
 interface KanbanCardProps {
@@ -175,11 +176,7 @@ function KanbanColumn<T extends KanbanItemBase>({
       style={style}
       data-slot="kanban-column"
       data-status={config.id}
-      className={cn(
-        "bg-muted flex w-72 shrink-0 flex-col gap-y-2",
-        compact ? "min-h-32" : "min-h-150",
-        isDragging && "z-50 opacity-50",
-      )}
+      className={cn("bg-muted flex w-72 shrink-0 flex-col gap-y-2", compact ? "min-h-32" : "min-h-150", isDragging && "z-50 opacity-50")}
     >
       <div
         data-slot="kanban-column-header"
@@ -193,11 +190,7 @@ function KanbanColumn<T extends KanbanItemBase>({
         <div className="flex items-center gap-x-2">
           <GripVertical className="size-3.5 text-gray-400" />
           {config.color && (
-            <span
-              data-slot="kanban-status-indicator"
-              className="size-2.5 rounded-full"
-              style={{ backgroundColor: resolveColor(config.color) }}
-            />
+            <span data-slot="kanban-status-indicator" className="size-2.5 rounded-full" style={{ backgroundColor: resolveColor(config.color) }} />
           )}
           <span className="text-sm font-semibold">{config.title}</span>
         </div>
@@ -210,9 +203,7 @@ function KanbanColumn<T extends KanbanItemBase>({
                 title={limit > 0 ? `WIP limit: ${limit}` : undefined}
                 className={cn(
                   "grid min-w-5 place-items-center rounded-full px-1 text-xs font-medium",
-                  over
-                    ? "bg-red-500 text-white"
-                    : "bg-neutral-200 dark:bg-neutral-700",
+                  over ? "bg-red-500 text-white" : "bg-neutral-200 dark:bg-neutral-700",
                 )}
               >
                 {limit > 0 ? `${items.length}/${limit}` : items.length}
@@ -258,15 +249,9 @@ function KanbanColumn<T extends KanbanItemBase>({
       <div
         ref={setDroppableRef}
         data-slot="kanban-column-body"
-        className={cn(
-          "flex min-h-32 flex-col gap-y-2 rounded-xs p-1 transition-colors",
-          isOver && "bg-primary-50/50 dark:bg-primary-950/30",
-        )}
+        className={cn("flex min-h-32 flex-col gap-y-2 rounded-xs p-1 transition-colors", isOver && "bg-primary-50/50 dark:bg-primary-950/30")}
       >
-        <SortableContext
-          items={items.map((i) => toCardDragId(i.id))}
-          strategy={verticalListSortingStrategy}
-        >
+        <SortableContext items={items.map((i) => toCardDragId(i.id))} strategy={verticalListSortingStrategy}>
           {items.length > 0
             ? items.map((item) => (
                 <KanbanCard key={item.id} id={toCardDragId(item.id)}>
@@ -276,10 +261,7 @@ function KanbanColumn<T extends KanbanItemBase>({
             : (columnEmptyState ?? (
                 <div
                   data-slot="kanban-empty-state"
-                  className={cn(
-                    "grid min-h-24 place-items-center rounded-xs border border-dashed",
-                    "border-neutral-300 dark:border-neutral-600",
-                  )}
+                  className={cn("grid min-h-24 place-items-center rounded-xs border border-dashed", "border-neutral-300 dark:border-neutral-600")}
                 >
                   <p className="text-sm text-neutral-400 dark:text-neutral-500">No items</p>
                 </div>
@@ -436,12 +418,7 @@ export function Kanban<T extends KanbanItemBase>({
   const sorted = columns.sort((a, b) => a.position - b.position);
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCorners}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
+    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div data-slot="kanban" className={cn("w-full overflow-hidden", className)}>
         <div className="flex w-auto items-start gap-x-2 overflow-x-auto p-1">
           <SortableContext items={columnSortableIds} strategy={horizontalListSortingStrategy}>
@@ -452,8 +429,8 @@ export function Kanban<T extends KanbanItemBase>({
                 sortableId={`column-${column.id}`}
                 items={itemsByStatus[column.id] ?? []}
                 renderCard={renderCard}
-                onEdit={onColumnEdit ? () => onColumnEdit(column.id) : undefined}
-                onDelete={onColumnDelete ? () => onColumnDelete(column.id) : undefined}
+                onEdit={() => onColumnEdit?.(column.id)}
+                onDelete={() => onColumnDelete?.(column.id)}
                 columnEmptyState={columnEmptyState}
                 compact={compact}
               />
@@ -464,26 +441,11 @@ export function Kanban<T extends KanbanItemBase>({
       <DragOverlay>
         {activeColumn ? (
           <div data-slot="kanban-column-overlay" className="flex w-72 flex-col gap-y-2">
-            <div
-              className={cn(
-                "flex h-10 items-center gap-x-2 rounded-xs px-3 shadow-lg",
-                "bg-neutral-100 dark:bg-neutral-800",
-              )}
-            >
+            <div className={cn("flex h-10 items-center gap-x-2 rounded-xs px-3 shadow-lg", "bg-neutral-100 dark:bg-neutral-800")}>
               <GripVertical className="size-3.5 text-gray-400" />
-              {activeColumn.color && (
-                <span
-                  className="size-2.5 rounded-full"
-                  style={{ backgroundColor: resolveColor(activeColumn.color) }}
-                />
-              )}
+              {activeColumn.color && <span className="size-2.5 rounded-full" style={{ backgroundColor: resolveColor(activeColumn.color) }} />}
               <span className="text-sm font-semibold">{activeColumn.title}</span>
-              <span
-                className={cn(
-                  "ml-auto grid size-5 place-items-center rounded-full text-xs font-medium",
-                  "bg-neutral-200 dark:bg-neutral-700",
-                )}
-              >
+              <span className={cn("ml-auto grid size-5 place-items-center rounded-full text-xs font-medium", "bg-neutral-200 dark:bg-neutral-700")}>
                 {itemsByStatus[activeColumn.id]?.length ?? 0}
               </span>
             </div>
@@ -495,10 +457,7 @@ export function Kanban<T extends KanbanItemBase>({
             />
           </div>
         ) : activeItem ? (
-          <div
-            data-slot="kanban-card-overlay"
-            className="rounded-xs border bg-white p-3 shadow-xl dark:border-neutral-700 dark:bg-neutral-800"
-          >
+          <div data-slot="kanban-card-overlay" className="rounded-xs border bg-white p-3 shadow-xl dark:border-neutral-700 dark:bg-neutral-800">
             {renderCard(activeItem)}
           </div>
         ) : null}
