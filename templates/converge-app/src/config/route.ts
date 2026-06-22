@@ -26,8 +26,6 @@ export type ConvergeApp = {
   disabled?: boolean;
 };
 
-// Navigation is intentionally empty in the scaffold. Populate these to build out your app's menu.
-export const QUICK_LINKS: RouteConfig[] = [];
 export const ADMIN_ROUTES: RouteGroup[] = [];
-export const USER_ROUTES: RouteGroup[] = [];
+
 export const CONVERGE_APPS: ConvergeApp[] = [];
