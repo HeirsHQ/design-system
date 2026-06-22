@@ -1,6 +1,6 @@
 {
   "name": "@heirshq/design-system",
-  "version": "1.14.3",
+  "version": "1.15.0",
   "description": "Heirs Design System - A reusable component library",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,11 +14,14 @@
     "./theme": "./dist/theme.css"
   },
   "bin": {
-    "create-mfe": "./scaffold-mfe.mjs"
+    "create-mfe": "./scaffold-mfe.mjs",
+    "create-app": "./scaffold-app.mjs"
   },
   "files": [
     "dist",
-    "scaffold-mfe.mjs"
+    "scaffold-mfe.mjs",
+    "scaffold-app.mjs",
+    "templates"
   ],
   "scripts": {
     "build": "tsc && node --input-type=module --eval \"import{copyFileSync}from'node:fs';copyFileSync('src/styles.css','dist/styles.css');copyFileSync('src/theme.css','dist/theme.css')\"",

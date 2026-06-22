@@ -184,147 +184,56 @@ The full registry index is available at `https://heirshq.github.io/design-system
 
 ---
 
-## MFE Scaffolder
+## App Scaffolder
 
-The package ships a `create-mfe` CLI that scaffolds a new Converge micro-frontend workspace — no local install required.
+The package ships a `create-app` CLI that scaffolds a complete standalone **Next.js (App Router)** application, pre-wired to consume this design system — no local install required. The design system is public, so no token is needed to run it.
 
-### Prerequisites
+### What you get
 
-The package is hosted on GitHub Packages, so you need a PAT with the `read:packages` scope before `pnpm dlx` can resolve it.
+A new Next.js app at `./<app-name>/` containing:
 
-**Create a PAT** at GitHub → Settings → Developer settings → Personal access tokens → `read:packages`.
+- **Design system wired in** — `@heirshq/design-system` is added as a dependency and all UI/form components are imported from it. Tailwind v4, the shadcn `components.json`, PostCSS, the global theme tokens and `@import "@heirshq/design-system/styles"` are all configured.
+- **API layer** — a typed Axios client with `/api/proxy` service routing, plus the react-query hook layer (`useApiQuery`, `usePaginatedQuery`, `useApiMutation`).
+- **App shell** — `Sidebar` + `Header` with an empty navigation config (`src/config/route.ts`) to fill in, an empty `admin/overview` page to start from, and all `(auth)` pages.
+- **State & access** — zustand user store, `WithAuth` guard, app provider, error boundary, inactivity handling, and the permission resolver (`lib/permissions`, `lib/rbac`).
 
-#### Option A — Permanent setup (recommended)
-
-Do this once and the scaffolder will always work, regardless of which directory you run it from.
-
-**1. Add the registry to your global npmrc.**
-
-The global file is `~/.npmrc` on macOS/Linux or `C:\Users\<you>\.npmrc` on Windows. Create it if it doesn't exist:
-
-```
-@heirshq:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
-```
-
-**2. Add `NPM_TOKEN` to your shell profile** so it's exported in every session.
-
-```bash
-# bash — append to ~/.bashrc or ~/.bash_profile
-echo 'export NPM_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"' >> ~/.bashrc
-
-# zsh — append to ~/.zshrc
-echo 'export NPM_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"' >> ~/.zshrc
-```
-
-```powershell
-# PowerShell — append to your $PROFILE (creates it if missing)
-Add-Content -Path $PROFILE -Value '$env:NPM_TOKEN = "ghp_xxxxxxxxxxxxxxxxxxxx"'
-```
-
-After editing the profile, reload it (`source ~/.zshrc`, `. $PROFILE`, etc.) or open a new terminal.
-
-#### Option B — Temporary (current session only)
-
-Set the token for the current shell session, then run the command normally:
-
-```bash
-# bash / zsh
-export NPM_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxx"
-pnpm dlx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
-```
-
-```powershell
-# PowerShell
-$env:NPM_TOKEN = "ghp_xxxxxxxxxxxxxxxxxxxx"
-pnpm dlx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
-```
-
-> This requires the global `.npmrc` from Option A to already exist (so pnpm knows where to resolve `@heirshq`). The token expires at the end of the session.
-
-#### Option C — Fully inline (no `.npmrc` needed)
-
-Pass the registry and token directly as `--config.` flags. Nothing is stored on disk:
-
-```bash
-# bash / zsh
-pnpm dlx \
-  --config.@heirshq:registry=https://npm.pkg.github.com \
-  --config.//npm.pkg.github.com/:_authToken=ghp_xxxxxxxxxxxxxxxxxxxx \
-  @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
-```
-
-```powershell
-# PowerShell (one line)
-pnpm dlx --config.@heirshq:registry=https://npm.pkg.github.com --config.//npm.pkg.github.com/:_authToken=ghp_xxxxxxxxxxxxxxxxxxxx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
-```
+Only the app-specific `sidebar`, `header`, `sign-out`, `notifications` and `logo` live in the app; everything else comes from the package.
 
 ### Usage
 
 ```bash
 # pnpm (recommended)
-pnpm dlx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
+pnpm dlx @heirshq/design-system create-app <app-name>
 
 # npm
-npx @heirshq/design-system create-mfe --name converge-recruitment-mfe --port 4009
+npx @heirshq/design-system create-app <app-name>
 ```
+
+The `<app-name>` is a positional argument used for **both** the folder name and the `package.json` name — e.g. `create-app acme-console` creates `./acme-console/`.
 
 ### Options
 
-| Flag       | Required | Description                                            |
-| ---------- | -------- | ------------------------------------------------------ |
-| `--name`   | Yes      | Full module name — must match `converge-{slug}-mfe`    |
-| `--port`   | Yes      | Dev server port (1025–65535)                           |
-| `--routes` | No       | Comma-separated page route slugs (default: `overview`) |
+| Argument / Flag | Required | Description                                               |
+| --------------- | -------- | --------------------------------------------------------- |
+| `<app-name>`    | Yes      | Kebab-case name — names the folder and the `package.json` |
+| `--title`       | No       | Document title used in the root layout (default: derived) |
+| `--dir`         | No       | Parent directory to create the app in (default: cwd)      |
+| `--force`       | No       | Allow scaffolding into a non-empty directory              |
 
 ```bash
-# Scaffold with multiple routes
-pnpm dlx @heirshq/design-system create-mfe \
-  --name converge-recruitment-mfe \
-  --port 4009 \
-  --routes jobs,candidates,pipelines
+pnpm dlx @heirshq/design-system create-app acme-console --title "Acme Console" --dir ./apps
 ```
-
-### What gets generated
-
-Running the command creates a self-contained Nx workspace at `./<name>/` with the following structure:
-
-```
-converge-recruitment-mfe/
-├── package.json
-├── nx.json
-├── tsconfig.base.json
-├── tsconfig.json
-└── converge-recruitment-mfe/
-    ├── components.json
-    ├── project.json
-    ├── module-federation.config.ts
-    ├── rspack.config.ts
-    ├── postcss.config.mjs
-    ├── tsconfig.json
-    ├── tsconfig.app.json
-    └── src/
-        ├── main.ts
-        ├── bootstrap.tsx
-        ├── remote-entry.ts
-        ├── index.html
-        ├── styles.css
-        ├── routes.ts
-        ├── app/app.tsx
-        ├── lib/         (client.ts, query.ts, utils.ts)
-        ├── types/       (app.ts, query.ts)
-        └── pages/       (one file per --routes slug)
-```
-
-The scaffolder also prints the exact steps to wire the new remote into `converge-shell-mfe` (remotes config, module federation, type declarations, and app routing).
 
 ### After scaffolding
 
 ```bash
-cd converge-recruitment-mfe
+cd <app-name>
 pnpm install
+# set your *_SERVICE URLs in .env, then
 pnpm dev
 ```
+
+The scaffolder also seeds a `.env` (with a generated `NEXT_PUBLIC_ENCRYPTION_SECRET`) and an `.npmrc` mapping the `@heirshq` scope to GitHub Packages.
 
 ---
 

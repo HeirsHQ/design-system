@@ -1,3 +1,6 @@
+"use client";
+
+import { GripVertical, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import {
@@ -21,22 +24,19 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { HtEditOutline, HtGripVerticalOutline, HtMoreOutline, HtTrashOutline } from "../icons/index.js";
-import { cn } from "../lib/utils.js";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover.js";
 import type { StatusVariant } from "./columns.js";
-
-export type { StatusVariant };
+import { cn } from "../lib/utils.js";
 
 /** Maps StatusVariant keys to concrete dot colors for the column header indicator. */
 const VARIANT_COLORS: Record<StatusVariant, string> = {
-  amber: "#d97706",
-  danger: "#dc2626",
-  draft: "#7c3aed",
-  info: "#2563eb",
-  neutral: "#6b7280",
-  success: "#16a34a",
-  warning: "#ca8a04",
+  amber: "var(--color-gray-500)",
+  danger: "var(--color-red-500)",
+  draft: "var(--color-gray-500)",
+  info: "var(--color-blue-500)",
+  neutral: "var(--color-neutral-500)",
+  success: "var(--color-green-500)",
+  warning: "var(--color-yellow-500)",
 };
 
 const VARIANT_KEYS = new Set<string>(Object.keys(VARIANT_COLORS));
@@ -46,17 +46,27 @@ function resolveColor(color: string): string {
   return VARIANT_KEYS.has(color) ? VARIANT_COLORS[color as StatusVariant] : color;
 }
 
+// Card and column ids share one DndContext id space. Cards are namespaced so a
+// card id can never collide with a column id (e.g. an issue id == a status id).
+const CARD_ID_PREFIX = "card:";
+const toCardDragId = (id: string) => `${CARD_ID_PREFIX}${id}`;
+const fromCardDragId = (dragId: string) => (dragId.startsWith(CARD_ID_PREFIX) ? dragId.slice(CARD_ID_PREFIX.length) : dragId);
+
 /** Minimum shape required for items used in the Kanban board. */
 export interface KanbanItemBase {
   id: string;
-  status: string;
+  /** Default grouping field. Override with the `groupBy` prop to categorize by another field. */
+  status?: string;
 }
 
 /** Configuration for a single Kanban column. */
 export interface KanbanColumnConfig {
   id: string;
   title: string;
+  position: number;
   color?: StatusVariant | (string & {});
+  /** Work-in-progress limit; 0/undefined means no limit. The column flags when exceeded. */
+  wipLimit?: number;
 }
 
 /** Payload emitted when a card is dropped into a new position. */
@@ -71,23 +81,28 @@ export interface KanbanDragEndEvent<T extends KanbanItemBase> {
 interface KanbanProps<T extends KanbanItemBase> {
   items: T[];
   columns: KanbanColumnConfig[];
+  /** Item field whose value matches a column id, used to group cards. Defaults to "status". */
+  groupBy?: keyof T & string;
   renderCard: (item: T) => ReactNode;
   onDragEnd?: (event: KanbanDragEndEvent<T>) => void;
   onColumnsReorder?: (columns: KanbanColumnConfig[]) => void;
   onColumnEdit?: (columnId: string) => void;
   onColumnDelete?: (columnId: string) => void;
-  columnEmptyState?: ReactNode | undefined;
+  columnEmptyState?: ReactNode;
   className?: string;
+  /** Shorter columns — used for swimlane bands so stacked lanes stay readable. */
+  compact?: boolean | undefined;
 }
 
 interface KanbanColumnProps<T extends KanbanItemBase> {
   config: KanbanColumnConfig;
   items: T[];
   renderCard: (item: T) => ReactNode;
-  onEdit?: (() => void) | undefined;
-  onDelete?: (() => void) | undefined;
-  columnEmptyState?: ReactNode | undefined;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  columnEmptyState?: ReactNode;
   sortableId: string;
+  compact?: boolean | undefined;
 }
 
 interface KanbanCardProps {
@@ -96,7 +111,9 @@ interface KanbanCardProps {
 }
 
 function KanbanCard({ id, children }: KanbanCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -110,7 +127,7 @@ function KanbanCard({ id, children }: KanbanCardProps) {
       data-dragging={isDragging || undefined}
       style={style}
       className={cn(
-        "cursor-grab rounded-lg border bg-white p-3 shadow-sm transition-shadow",
+        "cursor-grab rounded-xs border bg-white p-3 shadow-sm transition-shadow",
         "hover:shadow-md active:cursor-grabbing",
         "dark:border-neutral-700 dark:bg-neutral-800",
         isDragging && "ring-primary-200 dark:ring-primary-800 z-50 opacity-50 shadow-lg ring-2",
@@ -123,7 +140,16 @@ function KanbanCard({ id, children }: KanbanCardProps) {
   );
 }
 
-function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onEdit, onDelete, columnEmptyState, sortableId }: KanbanColumnProps<T>) {
+function KanbanColumn<T extends KanbanItemBase>({
+  config,
+  items,
+  renderCard,
+  onEdit,
+  onDelete,
+  columnEmptyState,
+  sortableId,
+  compact,
+}: KanbanColumnProps<T>) {
   const {
     attributes,
     listeners,
@@ -150,36 +176,48 @@ function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onE
       style={style}
       data-slot="kanban-column"
       data-status={config.id}
-      className={cn("flex w-72 shrink-0 flex-col gap-y-2", isDragging && "z-50 opacity-50")}
+      className={cn("bg-muted flex w-72 shrink-0 flex-col gap-y-2", compact ? "min-h-32" : "min-h-150", isDragging && "z-50 opacity-50")}
     >
       <div
         data-slot="kanban-column-header"
         className={cn(
-          "flex h-10 cursor-grab items-center justify-between rounded-lg px-3 active:cursor-grabbing",
+          "flex h-10 cursor-grab items-center justify-between rounded-xs px-3 active:cursor-grabbing",
           "bg-neutral-100 dark:bg-neutral-800",
         )}
         {...attributes}
         {...listeners}
       >
         <div className="flex items-center gap-x-2">
-          <HtGripVerticalOutline className="size-3.5 text-gray-400" />
+          <GripVertical className="size-3.5 text-gray-400" />
           {config.color && (
             <span data-slot="kanban-status-indicator" className="size-2.5 rounded-full" style={{ backgroundColor: resolveColor(config.color) }} />
           )}
           <span className="text-sm font-semibold">{config.title}</span>
         </div>
         <div className="flex items-center gap-x-1">
-          <span className={cn("grid size-5 place-items-center rounded-full text-xs font-medium", "bg-neutral-200 dark:bg-neutral-700")}>
-            {items.length}
-          </span>
+          {(() => {
+            const limit = config.wipLimit ?? 0;
+            const over = limit > 0 && items.length > limit;
+            return (
+              <span
+                title={limit > 0 ? `WIP limit: ${limit}` : undefined}
+                className={cn(
+                  "grid min-w-5 place-items-center rounded-full px-1 text-xs font-medium",
+                  over ? "bg-red-500 text-white" : "bg-neutral-200 dark:bg-neutral-700",
+                )}
+              >
+                {limit > 0 ? `${items.length}/${limit}` : items.length}
+              </span>
+            );
+          })()}
           {hasActions && (
             <Popover>
               <PopoverTrigger asChild>
                 <button
                   onPointerDown={(e) => e.stopPropagation()}
-                  className="grid size-6 place-items-center rounded-md text-gray-400 hover:bg-neutral-200 hover:text-gray-600 dark:hover:bg-neutral-700 dark:hover:text-gray-300"
+                  className="grid size-6 place-items-center rounded-xs text-gray-400 hover:bg-neutral-200 hover:text-gray-600 dark:hover:bg-neutral-700 dark:hover:text-gray-300"
                 >
-                  <HtMoreOutline className="size-3.5" />
+                  <MoreVertical className="size-3.5" />
                 </button>
               </PopoverTrigger>
               <PopoverContent align="end" className="w-36 p-1">
@@ -187,18 +225,18 @@ function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onE
                   {onEdit && (
                     <button
                       onClick={onEdit}
-                      className="flex items-center gap-x-2 rounded-md px-2.5 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-neutral-700"
+                      className="flex items-center gap-x-2 rounded-xs px-2.5 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-neutral-700"
                     >
-                      <HtEditOutline className="size-3.5 text-gray-500" />
+                      <Pencil className="size-3.5 text-gray-500" />
                       Edit
                     </button>
                   )}
                   {onDelete && (
                     <button
                       onClick={onDelete}
-                      className="flex items-center gap-x-2 rounded-md px-2.5 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
+                      className="flex items-center gap-x-2 rounded-xs px-2.5 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
                     >
-                      <HtTrashOutline className="size-3.5" />
+                      <Trash2 className="size-3.5" />
                       Delete
                     </button>
                   )}
@@ -211,19 +249,19 @@ function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onE
       <div
         ref={setDroppableRef}
         data-slot="kanban-column-body"
-        className={cn("flex min-h-32 flex-col gap-y-2 rounded-lg p-1 transition-colors", isOver && "bg-primary-50/50 dark:bg-primary-950/30")}
+        className={cn("flex min-h-32 flex-col gap-y-2 rounded-xs p-1 transition-colors", isOver && "bg-primary-50/50 dark:bg-primary-950/30")}
       >
-        <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext items={items.map((i) => toCardDragId(i.id))} strategy={verticalListSortingStrategy}>
           {items.length > 0
             ? items.map((item) => (
-                <KanbanCard key={item.id} id={item.id}>
+                <KanbanCard key={item.id} id={toCardDragId(item.id)}>
                   {renderCard(item)}
                 </KanbanCard>
               ))
             : (columnEmptyState ?? (
                 <div
                   data-slot="kanban-empty-state"
-                  className={cn("grid min-h-24 place-items-center rounded-lg border border-dashed", "border-neutral-300 dark:border-neutral-600")}
+                  className={cn("grid min-h-24 place-items-center rounded-xs border border-dashed", "border-neutral-300 dark:border-neutral-600")}
                 >
                   <p className="text-sm text-neutral-400 dark:text-neutral-500">No items</p>
                 </div>
@@ -240,11 +278,15 @@ function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onE
  *
  * @template T - Item type extending KanbanItemBase
  *
+ * Cards are grouped into columns by the `groupBy` field (defaults to "status"),
+ * matching each item's field value against a column `id`.
+ *
  * @example
  * ```tsx
  * <Kanban
  *   items={tasks}
  *   columns={[{ id: "todo", title: "To Do" }, { id: "done", title: "Done" }]}
+ *   groupBy="status" // optional; default
  *   renderCard={(task) => <p>{task.title}</p>}
  *   onDragEnd={({ item, toStatus }) => updateTask(item.id, toStatus)}
  * />
@@ -253,6 +295,7 @@ function KanbanColumn<T extends KanbanItemBase>({ config, items, renderCard, onE
 export function Kanban<T extends KanbanItemBase>({
   items,
   columns,
+  groupBy,
   renderCard,
   onDragEnd: onDragEndProp,
   onColumnsReorder,
@@ -260,7 +303,12 @@ export function Kanban<T extends KanbanItemBase>({
   onColumnDelete,
   columnEmptyState,
   className,
+  compact,
 }: KanbanProps<T>) {
+  // Which item field maps to a column id. Falls back to "status".
+  const groupKey = (groupBy ?? "status") as keyof T;
+  const getGroup = useCallback((item: T) => String(item[groupKey] ?? ""), [groupKey]);
+
   const [activeItem, setActiveItem] = useState<T | null>(null);
   const [activeColumn, setActiveColumn] = useState<KanbanColumnConfig | null>(null);
 
@@ -277,12 +325,13 @@ export function Kanban<T extends KanbanItemBase>({
       grouped[col.id] = [];
     }
     for (const item of items) {
-      if (grouped[item.status]) {
-        grouped[item.status]?.push(item);
+      const g = getGroup(item);
+      if (grouped[g]) {
+        grouped[g].push(item);
       }
     }
     return grouped;
-  }, [items, columns]);
+  }, [items, columns, getGroup]);
 
   const handleDragStart = useCallback(
     (event: DragStartEvent) => {
@@ -291,7 +340,7 @@ export function Kanban<T extends KanbanItemBase>({
         const col = columns.find((c) => c.id === active.data.current?.columnId);
         setActiveColumn(col ?? null);
       } else {
-        const item = items.find((i) => i.id === active.id);
+        const item = items.find((i) => i.id === fromCardDragId(active.id as string));
         setActiveItem(item ?? null);
       }
     },
@@ -317,8 +366,8 @@ export function Kanban<T extends KanbanItemBase>({
         } else if (columns.some((c) => c.id === over.id)) {
           targetColId = over.id as string;
         } else {
-          const overItem = items.find((i) => i.id === over.id);
-          targetColId = overItem?.status;
+          const overItem = items.find((i) => i.id === fromCardDragId(over.id as string));
+          targetColId = overItem ? getGroup(overItem) : undefined;
         }
 
         if (!targetColId || activeColId === targetColId) return;
@@ -333,26 +382,28 @@ export function Kanban<T extends KanbanItemBase>({
       // Card drag
       if (!onDragEndProp) return;
 
-      const activeId = active.id as string;
+      const activeId = fromCardDragId(active.id as string);
       const overId = over.id as string;
 
       const draggedItem = items.find((item) => item.id === activeId);
       if (!draggedItem) return;
 
-      const fromStatus = draggedItem.status;
+      const fromStatus = getGroup(draggedItem);
 
       let toStatus: string;
       let toIndex: number;
 
+      // A column droppable keeps its raw id; a card target is namespaced.
       const isOverColumn = columns.some((col) => col.id === overId);
       if (isOverColumn) {
         toStatus = overId;
         toIndex = itemsByStatus[overId]?.length ?? 0;
       } else {
-        const overItem = items.find((item) => item.id === overId);
+        const overItemId = fromCardDragId(overId);
+        const overItem = items.find((item) => item.id === overItemId);
         if (!overItem) return;
-        toStatus = overItem.status;
-        toIndex = (itemsByStatus[toStatus] ?? []).findIndex((i) => i.id === overId);
+        toStatus = getGroup(overItem);
+        toIndex = (itemsByStatus[toStatus] ?? []).findIndex((i) => i.id === overItemId);
       }
 
       const fromIndex = (itemsByStatus[fromStatus] ?? []).findIndex((i) => i.id === activeId);
@@ -361,24 +412,27 @@ export function Kanban<T extends KanbanItemBase>({
 
       onDragEndProp({ item: draggedItem, fromStatus, toStatus, fromIndex, toIndex });
     },
-    [items, columns, itemsByStatus, onDragEndProp, onColumnsReorder],
+    [items, columns, itemsByStatus, onDragEndProp, onColumnsReorder, getGroup],
   );
+
+  const sorted = columns.sort((a, b) => a.position - b.position);
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div data-slot="kanban" className={cn("w-full overflow-hidden", className)}>
         <div className="flex w-auto items-start gap-x-2 overflow-x-auto p-1">
           <SortableContext items={columnSortableIds} strategy={horizontalListSortingStrategy}>
-            {columns.map((column) => (
+            {sorted.map((column) => (
               <KanbanColumn
                 key={column.id}
                 config={column}
                 sortableId={`column-${column.id}`}
                 items={itemsByStatus[column.id] ?? []}
                 renderCard={renderCard}
-                onEdit={onColumnEdit ? () => onColumnEdit(column.id) : undefined}
-                onDelete={onColumnDelete ? () => onColumnDelete(column.id) : undefined}
+                onEdit={() => onColumnEdit?.(column.id)}
+                onDelete={() => onColumnDelete?.(column.id)}
                 columnEmptyState={columnEmptyState}
+                compact={compact}
               />
             ))}
           </SortableContext>
@@ -387,8 +441,8 @@ export function Kanban<T extends KanbanItemBase>({
       <DragOverlay>
         {activeColumn ? (
           <div data-slot="kanban-column-overlay" className="flex w-72 flex-col gap-y-2">
-            <div className={cn("flex h-10 items-center gap-x-2 rounded-lg px-3 shadow-lg", "bg-neutral-100 dark:bg-neutral-800")}>
-              <HtGripVerticalOutline className="size-3.5 text-gray-400" />
+            <div className={cn("flex h-10 items-center gap-x-2 rounded-xs px-3 shadow-lg", "bg-neutral-100 dark:bg-neutral-800")}>
+              <GripVertical className="size-3.5 text-gray-400" />
               {activeColumn.color && <span className="size-2.5 rounded-full" style={{ backgroundColor: resolveColor(activeColumn.color) }} />}
               <span className="text-sm font-semibold">{activeColumn.title}</span>
               <span className={cn("ml-auto grid size-5 place-items-center rounded-full text-xs font-medium", "bg-neutral-200 dark:bg-neutral-700")}>
@@ -397,13 +451,13 @@ export function Kanban<T extends KanbanItemBase>({
             </div>
             <div
               className={cn(
-                "min-h-24 rounded-lg border border-dashed",
+                "min-h-24 rounded-xs border border-dashed",
                 "border-neutral-300 bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900",
               )}
             />
           </div>
         ) : activeItem ? (
-          <div data-slot="kanban-card-overlay" className="rounded-lg border bg-white p-3 shadow-xl dark:border-neutral-700 dark:bg-neutral-800">
+          <div data-slot="kanban-card-overlay" className="rounded-xs border bg-white p-3 shadow-xl dark:border-neutral-700 dark:bg-neutral-800">
             {renderCard(activeItem)}
           </div>
         ) : null}
