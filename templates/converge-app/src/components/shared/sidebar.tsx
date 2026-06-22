@@ -8,7 +8,7 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 
-import { ADMIN_ROUTES, USER_ROUTES, type RouteConfig } from "@/config/route";
+import { ADMIN_ROUTES, type RouteConfig } from "@/config/route";
 import { Popover, PopoverContent, PopoverTrigger } from "@heirshq/design-system";
 import { GoogleIcon, MicrosoftIcon, SlackIcon } from "@/assets/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@heirshq/design-system";
@@ -28,7 +28,7 @@ interface Props {
 /**
  * Returns the route set for a given user role.
  * - tenant-admin    → ADMIN_ROUTES   (manages their tenant)
- * - regular-user    → USER_ROUTES
+ * - regular-user    → ADMIN_ROUTES (scaffold is admin-only)
  *
  * @param role - The authenticated user's role
  */
@@ -37,12 +37,7 @@ const getRoutes = (role: UserRole) => {
     case "tenant-admin":
       return ADMIN_ROUTES;
     case "regular-user":
-      return USER_ROUTES;
-    default: {
-      const _exhaustive: never = role;
-      console.warn(`[Sidebar] Unknown role: "${_exhaustive}" — falling back to USER_ROUTES`);
-      return USER_ROUTES;
-    }
+      return ADMIN_ROUTES;
   }
 };
 

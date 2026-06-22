@@ -203,10 +203,10 @@ Only the app-specific `sidebar`, `header`, `sign-out`, `notifications` and `logo
 
 ```bash
 # pnpm (recommended)
-pnpm dlx @heirshq/design-system create-app <app-name>
+pnpm --package=@heirshq/design-system dlx create-app <app-name>
 
 # npm
-npx @heirshq/design-system create-app <app-name>
+npx --package=@heirshq/design-system create-app <app-name>
 ```
 
 The `<app-name>` is a positional argument used for **both** the folder name and the `package.json` name — e.g. `create-app acme-console` creates `./acme-console/`.
@@ -221,7 +221,7 @@ The `<app-name>` is a positional argument used for **both** the folder name and 
 | `--force`       | No       | Allow scaffolding into a non-empty directory              |
 
 ```bash
-pnpm dlx @heirshq/design-system create-app acme-console --title "Acme Console" --dir ./apps
+pnpm --package=@heirshq/design-system dlx create-app acme-console --title "Acme Console" --dir ./apps
 ```
 
 ### After scaffolding
