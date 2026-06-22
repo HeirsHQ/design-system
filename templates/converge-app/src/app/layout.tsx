@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { AppProvider, ErrorBoundary, QueryProvider } from "@/components/providers";
-import { Toaster } from "@heirshq/design-system";
 
 const mulish = Mulish({
   variable: "--font-mulish",
@@ -29,7 +28,6 @@ export default function RootLayout({
             <QueryProvider>
               <AppProvider>
                 {children}
-                <Toaster position="top-right" />
               </AppProvider>
             </QueryProvider>
           </ThemeProvider>

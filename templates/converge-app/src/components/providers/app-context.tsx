@@ -8,6 +8,7 @@ import { Company, HttpResponse, Maybe } from "@/types";
 import { InactivityModal } from "./inactivity-modal";
 import { useUserStore } from "@/store/core";
 import { useApiQuery } from "@/lib/query";
+import { Toaster } from "@heirshq/design-system";
 
 const ACTIVITIES = ["mousemove", "keydown", "mousedown", "click", "scroll", "touch"];
 
@@ -112,6 +113,7 @@ export const AppProvider = ({ children }: PropsWithChildren & {}) => {
         onStayActive={stayActive}
         onSignout={handleSessionExpired}
       />
+      <Toaster position="top-right" />
     </AppContext.Provider>
   );
 };

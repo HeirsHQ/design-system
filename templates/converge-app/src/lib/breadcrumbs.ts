@@ -1,4 +1,4 @@
-import { ADMIN_ROUTES, USER_ROUTES, type RouteGroup } from "@/config/route";
+import { ADMIN_ROUTES, type RouteGroup } from "@/config/route";
 
 function buildLabelMap(groups: RouteGroup[]): Record<string, string> {
   const map: Record<string, string> = {};
@@ -19,7 +19,6 @@ function buildLabelMap(groups: RouteGroup[]): Record<string, string> {
 
 const ROUTE_LABEL_MAP: Record<string, string> = {
   ...buildLabelMap(ADMIN_ROUTES),
-  ...buildLabelMap(USER_ROUTES),
 };
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

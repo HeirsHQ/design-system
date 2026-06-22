@@ -1,3 +1,5 @@
+"use client";
+
 import { Loader } from "@heirshq/design-system";
 
 const Loading = () => {

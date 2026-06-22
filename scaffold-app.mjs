@@ -21,7 +21,7 @@
  *   --force   Allow writing into a non-empty target directory (default: false)
  */
 
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync, renameSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomBytes } from "node:crypto";
@@ -83,6 +83,12 @@ if (existsSync(TARGET) && readdirSync(TARGET).length > 0 && !FORCE) {
 mkdirSync(TARGET, { recursive: true });
 
 cpSync(TEMPLATE_DIR, TARGET, { recursive: true });
+
+// npm strips a file literally named ".gitignore" on publish, so the template
+// ships it as "gitignore"; restore the dot in the generated app.
+const giSrc = join(TARGET, "gitignore");
+const giDst = join(TARGET, ".gitignore");
+if (existsSync(giSrc) && !existsSync(giDst)) renameSync(giSrc, giDst);
 
 const replaceTokens = (relPath, replacements) => {
   const file = join(TARGET, relPath);
