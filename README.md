@@ -184,45 +184,33 @@ The full registry index is available at `https://heirshq.github.io/design-system
 
 ---
 
-## App Scaffolder
+## App Scaffolder (`create-app`)
 
-The package ships a `create-app` CLI that scaffolds a complete standalone **Next.js (App Router)** application, pre-wired to consume this design system — no local install required. The design system is public, so no token is needed to run it.
-
-### What you get
-
-A new Next.js app at `./<app-name>/` containing:
-
-- **Design system wired in** — `@heirshq/design-system` is added as a dependency and all UI/form components are imported from it. Tailwind v4, the shadcn `components.json`, PostCSS, the global theme tokens and `@import "@heirshq/design-system/styles"` are all configured.
-- **API layer** — a typed Axios client with `/api/proxy` service routing, plus the react-query hook layer (`useApiQuery`, `usePaginatedQuery`, `useApiMutation`).
-- **App shell** — `Sidebar` + `Header` with an empty navigation config (`src/config/route.ts`) to fill in, an empty `admin/overview` page to start from, and all `(auth)` pages.
-- **State & access** — zustand user store, `WithAuth` guard, app provider, error boundary, inactivity handling, and the permission resolver (`lib/permissions`, `lib/rbac`).
-
-Only the app-specific `sidebar`, `header`, `sign-out`, `notifications` and `logo` live in the app; everything else comes from the package.
+`create-app` scaffolds a complete standalone **Next.js (App Router)** application pre-wired with the full Converge foundation on top of this design system. The design system is public, so no token is needed to run it.
 
 ### Usage
 
 ```bash
-# pnpm (recommended)
-pnpm --package=@heirshq/design-system dlx create-app <app-name>
-
-# npm
-npx --package=@heirshq/design-system create-app <app-name>
+pnpm --package=@heirshq/design-system dlx create-app my-app
 ```
 
-The `<app-name>` is a positional argument used for **both** the folder name and the `package.json` name — e.g. `create-app acme-console` creates `./acme-console/`.
+`<app-name>` is a positional argument used for both the folder name and the `package.json` name.
+
+### What you get
+
+- **Design system wired in** — `@heirshq/design-system`, Tailwind v4 and the shadcn `components.json`
+- **API layer** — typed Axios client + `/api/proxy` routing, and the react-query hooks (`useApiQuery`, `usePaginatedQuery`, `useApiMutation`)
+- **App shell** — `Sidebar` + `Header` with an empty navigation config (`src/config/route.ts`), an empty `admin/overview` page, and all `(auth)` pages
+- **State & access** — zustand user store, `WithAuth` guard, app provider, error boundary, inactivity handling, and the permission resolver (`lib/permissions`, `lib/rbac`)
 
 ### Options
 
 | Argument / Flag | Required | Description                                               |
 | --------------- | -------- | --------------------------------------------------------- |
 | `<app-name>`    | Yes      | Kebab-case name — names the folder and the `package.json` |
-| `--title`       | No       | Document title used in the root layout (default: derived) |
+| `--title`       | No       | Document title in the root layout (default: derived)      |
 | `--dir`         | No       | Parent directory to create the app in (default: cwd)      |
 | `--force`       | No       | Allow scaffolding into a non-empty directory              |
-
-```bash
-pnpm --package=@heirshq/design-system dlx create-app acme-console --title "Acme Console" --dir ./apps
-```
 
 ### After scaffolding
 
@@ -233,7 +221,48 @@ pnpm install
 pnpm dev
 ```
 
-The scaffolder also seeds a `.env` (with a generated `NEXT_PUBLIC_ENCRYPTION_SECRET`) and an `.npmrc` mapping the `@heirshq` scope to GitHub Packages.
+---
+
+## Bare App Scaffolder (`create-new-app`)
+
+`create-new-app` scaffolds a **bare** app — just `@heirshq/design-system`, Tailwind v4 and shadcn config, with no auth, providers, store or API layer. Choose a **Next.js** or **Vite** starter.
+
+### Usage
+
+```bash
+# Next.js (default)
+pnpm --package=@heirshq/design-system dlx create-new-app my-app
+
+# Vite + React
+pnpm --package=@heirshq/design-system dlx create-new-app my-app --template vite
+```
+
+### Options
+
+| Argument / Flag | Required | Description                                                       |
+| --------------- | -------- | ----------------------------------------------------------------- |
+| `<app-name>`    | Yes      | Kebab-case name — names the folder and the `package.json`         |
+| `--template`    | No       | `next` (default) or `vite`                                        |
+| `--title`       | No       | Document title (layout / `index.html`), default derived from name |
+| `--dir`         | No       | Parent directory to create the app in (default: cwd)              |
+| `--force`       | No       | Allow scaffolding into a non-empty directory                      |
+
+### What you get
+
+- `@heirshq/design-system` installed, with `@import "@heirshq/design-system/styles"` and `/theme` in the global CSS
+- Tailwind v4 (`@tailwindcss/postcss` for Next, `@tailwindcss/vite` for Vite) plus `tailwindcss-animate`
+- a shadcn `components.json` and a `@/lib/utils` `cn` helper, so `npx shadcn add …` works out of the box
+- one example page rendering a design-system `Button`, an `.npmrc` mapping the `@heirshq` scope to GitHub Packages, and a `.gitignore`
+
+### After scaffolding
+
+```bash
+cd <app-name>
+pnpm install
+pnpm dev
+```
+
+> **Next.js note:** design-system components are client components, so import them from a `"use client"` file — the generated `app/page.tsx` already is. The Vite starter has no such constraint.
 
 ---
 

@@ -1,0 +1,6 @@
+@import "@heirshq/design-system/styles";
+@import "@heirshq/design-system/theme";
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
